@@ -1,0 +1,38 @@
+cat > .gitignore << 'EOF'
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Angular
+node_modules/
+dist/
+*.tgz
+
+# Backend Maven
+target/
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+logs/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno (contraseñas, keys)
+.env
+*.key
+*.pem
+
+# Archivos temporales
+*.tmp
+*.temp
+EOF
