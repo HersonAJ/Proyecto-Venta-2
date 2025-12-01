@@ -1,0 +1,31 @@
+/* Efecto suave al aparecer */
+.scroll-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.scroll-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-1 { transition-delay: 0.15s; }
+.delay-2 { transition-delay: 0.3s; }
+
+/* Lista más elegante */
+.rules-list li {
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(45deg, #ffc107, #ffffff);
+
+  /* Compatibilidad */
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+}

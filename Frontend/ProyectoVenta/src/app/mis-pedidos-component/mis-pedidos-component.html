@@ -1,0 +1,162 @@
+<section class="mis-pedidos-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+            <h5 class="mb-0 fw-bold">📦 MIS PEDIDOS</h5>
+          </div>
+          <h2 class="fw-bold text-warning">Mis Pedidos Activos</h2>
+          <p class="opacity-90 mb-0">Haz clic en un pedido para ver sus detalles</p>
+        </div>
+
+        <!-- Loading -->
+        @if (loading) {
+          <div class="text-center py-5">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 opacity-90">Cargando tus pedidos...</p>
+          </div>
+        }
+
+        <!-- Error -->
+        @if (errorMessage && !loading) {
+          <div class="alert alert-danger text-center mb-4">
+            <div class="d-flex align-items-center justify-content-center">
+              <span class="text-danger me-2">⚠️</span>
+              <span>{{ errorMessage }}</span>
+            </div>
+            <button class="btn btn-outline-warning btn-sm mt-2" (click)="recargarPedidos()">
+              Reintentar
+            </button>
+          </div>
+        }
+
+        <!-- Sin Pedidos -->
+        @if (!loading && !errorMessage && pedidos.length === 0) {
+          <div class="text-center py-5">
+            <div class="empty-pedidos-icon mb-3">
+              <span class="display-1 text-warning opacity-50">📭</span>
+            </div>
+            <h4 class="text-warning mb-3">No tienes pedidos activos</h4>
+            <p class="opacity-90 mb-4">Cuando hagas un pedido, aparecerá aquí para que puedas revisar sus detalles.</p>
+            <button class="btn btn-warning btn-lg fw-bold" routerLink="/menu">
+              🍽️ Hacer Mi Primer Pedido
+            </button>
+          </div>
+        }
+
+        <!-- Lista de Pedidos con Acordeón -->
+        @if (!loading && !errorMessage && pedidos.length > 0) {
+          <div class="pedidos-lista">
+            
+            <!-- Contador -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="text-warning mb-0">
+                {{ pedidos.length }} pedido(s) activo(s)
+              </h5>
+              <button class="btn btn-outline-warning btn-sm" (click)="recargarPedidos()">
+                🔄 Actualizar
+              </button>
+            </div>
+
+            <!-- Acordeón de Pedidos -->
+            <div class="accordion" id="pedidosAccordion">
+              @for (pedido of pedidos; track pedido.id; let i = $index) {
+                <div class="accordion-item bg-dark border border-secondary mb-2">
+                  
+                  <!-- Header del Acordeón -->
+                  <h2 class="accordion-header">
+                    <button 
+                      class="accordion-button bg-dark text-white collapsed" 
+                      type="button" 
+                      data-bs-toggle="collapse" 
+                      [attr.data-bs-target]="'#collapse' + pedido.id"
+                      aria-expanded="false" 
+                      [attr.aria-controls]="'collapse' + pedido.id"
+                    >
+                      <div class="d-flex justify-content-between align-items-center w-100 me-3">
+                        <div class="text-start">
+                          <h6 class="text-warning fw-bold mb-0">Pedido #{{ getNumeroPedido(i) }}</h6>
+                          <small class="text-white opacity-90">
+                            {{ formatearFecha(pedido.fechaPedido) }}
+                          </small>
+                        </div>
+                        <div class="text-end">
+                          <span class="badge bg-warning text-dark me-2">
+                            {{ getMetodoPagoTexto(pedido.metodoPago) }}
+                          </span>
+                          <span class="text-success fw-bold">Q{{ pedido.total | number:'1.2-2' }}</span>
+                        </div>
+                      </div>
+                    </button>
+                  </h2>
+
+                  <!-- Contenido del Acordeón -->
+                  <div 
+                    [id]="'collapse' + pedido.id" 
+                    class="accordion-collapse collapse" 
+                    [attr.data-bs-parent]="'#pedidosAccordion'"
+                  >
+                    <div class="accordion-body p-3">
+                      
+                      <!-- Lista de Productos -->
+                      <h6 class="text-warning fw-bold mb-3">📋 Productos del Pedido:</h6>
+                      <div class="productos-lista">
+                        @for (detalle of pedido.detalles; track $index) {
+                          <div class="producto-item d-flex justify-content-between align-items-center py-2 border-bottom border-secondary">
+                            <div class="producto-info">
+                              <h6 class="text-white mb-1">{{ detalle.productoNombre }}</h6>
+                              <small class="text-warning opacity-90">
+                                {{ detalle.cantidad }} × Q{{ detalle.precioUnitario | number:'1.2-2' }}
+                              </small>
+                            </div>
+                            <div class="producto-total text-end">
+                              <h6 class="text-success mb-0">Q{{ detalle.subtotal | number:'1.2-2' }}</h6>
+                            </div>
+                          </div>
+                        }
+                      </div>
+
+                      <!-- Resumen -->
+                      <div class="pedido-resumen mt-3 pt-3 border-top border-warning">
+                        <div class="row">
+                          <div class="col-6">
+                            <small class="text-white opacity-90">Items diferentes:</small>
+                            <br>
+                            <strong class="text-warning">{{ pedido.cantidadItems }} producto(s)</strong>
+                          </div>
+                          <div class="col-6 text-end">
+                            <small class="text-white opacity-90">Total:</small>
+                            <br>
+                            <strong class="text-success">Q{{ pedido.total | number:'1.2-2' }}</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              }
+            </div>
+
+          </div>
+        }
+
+        <!-- Botón Volver -->
+        @if (!loading) {
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-warning" routerLink="/menu">
+              ← Volver al Menú
+            </button>
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+</section>

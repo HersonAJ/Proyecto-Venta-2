@@ -1,0 +1,161 @@
+<section class="personalizar-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <!-- Card de Personalización -->
+        <div class="personalizar-card bg-dark border border-warning rounded-3 p-4">
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+              <h5 class="mb-0 fw-bold">🎯 PERSONALIZAR</h5>
+            </div>
+            <h2 class="fw-bold text-warning">{{ producto.nombre }}</h2>
+            <p class="opacity-90 mb-0">Personaliza tu pedido a tu gusto</p>
+          </div>
+
+          <!-- Información del Producto -->
+          <div class="producto-info mb-4 p-3 bg-dark border border-secondary rounded">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h4 class="text-warning fw-bold mb-1">{{ producto.nombre }}</h4>
+                <p class="text-white opacity-90 mb-2 small">{{ producto.descripcion }}</p>
+                <h5 class="text-success fw-bold mb-0">
+                  Q{{ producto.precioBase | number : '1.2-2' }}
+                </h5>
+              </div>
+              <div class="col-md-4 text-center">
+                @if (producto.imagenUrl) {
+                <img
+                  [src]="producto.imagenUrl"
+                  [alt]="producto.nombre"
+                  class="producto-image rounded"
+                  style="height: 80px; width: 80px; object-fit: cover"
+                />
+                } @else {
+                <div
+                  class="bg-secondary rounded d-flex align-items-center justify-content-center"
+                  style="height: 80px; width: 80px"
+                >
+                  <span class="text-white opacity-75">🖼️</span>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Cantidad -->
+          <div class="cantidad-section mb-4">
+            <h5 class="text-warning fw-bold mb-3">📦 Cantidad</h5>
+            <div class="d-flex align-items-center gap-3">
+              <button
+                class="btn btn-outline-warning btn-sm"
+                (click)="decrementarCantidad()"
+                [disabled]="cantidad <= 1"
+              >
+                -
+              </button>
+              <span class="fw-bold fs-4 text-white">{{ cantidad }}</span>
+              <button class="btn btn-outline-warning btn-sm" (click)="incrementarCantidad()">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- Ingredientes Obligatorios -->
+          @if (getIngredientesObligatorios().length > 0) {
+          <div class="ingredientes-obligatorios mb-4">
+            <h5 class="text-warning fw-bold mb-3">✅ Incluido (No se puede quitar)</h5>
+            <div class="row g-2">
+              @for (ingrediente of getIngredientesObligatorios(); track ingrediente.id) {
+              <div class="col-md-6">
+                <div class="d-flex align-items-center bg-dark border border-success rounded p-2">
+                  <span class="text-success me-2">✓</span>
+                  <span class="text-white">{{ ingrediente.nombre }}</span>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          }
+
+          <!-- Ingredientes Opcionales -->
+          @if (getIngredientesNoObligatorios().length > 0) {
+          <div class="ingredientes-opcionales mb-4">
+            <h5 class="text-warning fw-bold mb-3">🔧 Personalizar (Puedes quitar)</h5>
+            <p class="opacity-90 small mb-3">Desmarca los ingredientes que no deseas incluir:</p>
+
+            <div class="row g-2">
+              @for (ingrediente of getIngredientesNoObligatorios(); track ingrediente.id) {
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'ingrediente-' + ingrediente.id"
+                    [checked]="!ingredientesSeleccionados.includes(ingrediente.id)"
+                    (change)="toggleIngrediente(ingrediente.id)"
+                  />
+                  <label
+                    class="form-check-label text-white"
+                    [for]="'ingrediente-' + ingrediente.id"
+                  >
+                    {{ ingrediente.nombre }}
+                  </label>
+                </div>
+              </div>
+              }
+            </div>
+
+            @if (ingredientesSeleccionados.length > 0) {
+            <div class="mt-3 p-2 bg-dark border border-warning rounded">
+              <h6 class="text-warning mb-2">📝 Quitando:</h6>
+              <div class="d-flex flex-wrap gap-2">
+                @for (ingredienteId of ingredientesSeleccionados; track ingredienteId) {
+                <span class="badge bg-warning text-dark small">
+                  {{ getNombreIngrediente(ingredienteId) }}
+                </span>
+                }
+              </div>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Mensaje si no hay ingredientes para personalizar -->
+          @if (getIngredientesNoObligatorios().length === 0) {
+          <div class="alert alert-info text-center">
+            <p class="mb-0">Este producto no tiene ingredientes opcionales para personalizar.</p>
+          </div>
+          }
+
+          <!-- Botones de Acción -->
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+            <button
+              type="button"
+              class="btn btn-outline-secondary me-md-2"
+              (click)="cancelar()"
+              [disabled]="loading"
+            >
+              ↩️ Volver al Menú
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning fw-bold"
+              (click)="agregarAlCarrito()"
+              [disabled]="loading"
+            >
+              @if (!loading) {
+              <span>🛒 Agregar al Carrito ({{ cantidad }})</span>
+              } @if (loading) {
+              <span>
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Agregando...
+              </span>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

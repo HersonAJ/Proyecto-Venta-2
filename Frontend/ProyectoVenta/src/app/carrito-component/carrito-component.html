@@ -1,0 +1,205 @@
+<section class="carrito-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+            <h5 class="mb-0 fw-bold">🛒 MI CARRITO</h5>
+          </div>
+          <h2 class="fw-bold text-warning">Tu Pedido</h2>
+          <p class="opacity-90 mb-0">Revisa y confirma tu pedido</p>
+        </div>
+
+        <!-- Carrito Vacío -->
+        @if (carrito.items.length === 0) {
+          <div class="carrito-vacio text-center py-5">
+            <div class="empty-cart-icon mb-3">
+              <span class="display-1 text-warning opacity-50">🛒</span>
+            </div>
+            <h4 class="text-warning mb-3">Tu carrito está vacío</h4>
+            <p class="opacity-90 mb-4">Agrega algunos productos deliciosos a tu pedido</p>
+            <button class="btn btn-warning btn-lg fw-bold" routerLink="/menu">
+              🍽️ Ir al Menú
+            </button>
+          </div>
+        }
+
+        <!-- Carrito con Items -->
+        @if (carrito.items.length > 0) {
+          <div class="carrito-contenido">
+            
+            <!-- Lista de Items -->
+            <div class="carrito-items mb-4">
+              @for (item of carrito.items; track $index; let i = $index) {
+                <div class="carrito-item bg-dark border border-secondary rounded-3 p-3 mb-3">
+                  <div class="row align-items-center">
+                    
+                    <!-- Imagen del Producto -->
+                    <div class="col-md-2 text-center">
+                      @if (item.producto.imagenUrl) {
+                        <img 
+                          [src]="item.producto.imagenUrl" 
+                          [alt]="item.producto.nombre"
+                          class="producto-image rounded"
+                          style="height: 80px; width: 80px; object-fit: cover;"
+                        >
+                      } @else {
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-center" 
+                             style="height: 80px; width: 80px;">
+                          <span class="text-white opacity-75">🖼️</span>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Información del Producto -->
+                    <div class="col-md-5">
+                      <h5 class="text-warning fw-bold mb-1">{{ item.producto.nombre }}</h5>
+                      <p class="text-white opacity-90 small mb-2">{{ item.producto.descripcion }}</p>
+                      
+                      <!-- Personalizaciones -->
+                      @if (getIngredientesQuitados(item) !== 'Sin personalizaciones') {
+                        <div class="personalizaciones">
+                          <small class="text-warning fw-bold">Quitando:</small>
+                          <small class="text-white opacity-90 ms-1">{{ getIngredientesQuitados(item) }}</small>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Controles de Cantidad -->
+                    <div class="col-md-3">
+                      <div class="cantidad-controls d-flex align-items-center justify-content-center gap-3">
+                        <button 
+                          class="btn btn-outline-warning btn-sm"
+                          (click)="decrementarCantidad(i)"
+                          [disabled]="item.cantidad <= 1"
+                        >
+                          -
+                        </button>
+                        <span class="fw-bold fs-5 text-white">{{ item.cantidad }}</span>
+                        <button 
+                          class="btn btn-outline-warning btn-sm"
+                          (click)="incrementarCantidad(i)"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Precio y Eliminar -->
+                    <div class="col-md-2 text-center">
+                      <h5 class="text-success fw-bold mb-2">Q{{ (item.precio * item.cantidad) | number:'1.2-2' }}</h5>
+                      <small class="text-white opacity-75 d-block">Q{{ item.precio | number:'1.2-2' }} c/u</small>
+                      <button 
+                        class="btn btn-outline-danger btn-sm mt-2"
+                        (click)="eliminarItem(i)"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Resumen y Acciones -->
+            <div class="carrito-resumen bg-dark border border-warning rounded-3 p-4">
+              <div class="row align-items-center">
+                
+                <!-- Total -->
+                <div class="col-md-6">
+                  <h4 class="text-warning fw-bold mb-1">Total del Pedido</h4>
+                  <h2 class="text-success fw-bold">Q{{ carrito.total | number:'1.2-2' }}</h2>
+                  <p class="text-white opacity-90 mb-0 small">
+                    {{ carrito.cantidadTotal }} producto(s) en total
+                  </p>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="col-md-6 text-md-end">
+                  <div class="d-flex flex-column flex-md-row gap-2 justify-content-md-end">
+                    <button 
+                      class="btn btn-outline-secondary"
+                      data-bs-toggle="modal" 
+                      data-bs-target="#confirmarVaciarModal"
+                    >
+                      🗑️ Vaciar Carrito
+                    </button>
+                    <button 
+                      class="btn btn-outline-warning"
+                      routerLink="/menu"
+                    >
+                      ← Seguir Comprando
+                    </button>
+                    <button 
+                      class="btn btn-warning fw-bold"
+                      (click)="confirmarPedido()"
+                      [disabled]="loading"
+                    >
+                      @if (!loading) {
+                        <span>✅ Confirmar Pedido</span>
+                      }
+                      @if (loading) {
+                        <span>
+                          <span class="spinner-border spinner-border-sm me-2"></span>
+                          Procesando...
+                        </span>
+                      }
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmación para Vaciar Carrito -->
+  <div class="modal fade" id="confirmarVaciarModal" tabindex="-1" aria-labelledby="confirmarVaciarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark border border-warning">
+        <div class="modal-header border-warning">
+          <h5 class="modal-title text-warning fw-bold" id="confirmarVaciarModalLabel">⚠️ Confirmar</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-white">
+          <p class="mb-0">¿Estás seguro de que quieres vaciar todo el carrito? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer border-warning">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-warning fw-bold" (click)="vaciarCarritoConfirmado()" data-bs-dismiss="modal">
+            🗑️ Sí, Vaciar Carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="pedidoExitoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark border border-success">
+      <div class="modal-header border-success">
+        <h5 class="modal-title text-success fw-bold">✅ Pedido Confirmado</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-white text-center">
+        <p class="mb-3">Tu pedido ha sido recibido y está en preparación</p>
+        <p class="small opacity-90 mb-0">Te notificaremos cuando esté listo para recoger</p>
+      </div>
+      <div class="modal-footer border-success">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Seguir Comprando</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" routerLink="/mis-pedidos">
+          Ver Mis Pedidos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

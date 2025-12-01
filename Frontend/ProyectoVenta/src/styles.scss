@@ -1,0 +1,30 @@
+/* src/styles.scss - Agregar esto al inicio */
+
+/* Variables de tema personalizado para Hot Dogs */
+:root {
+  --primary: #FF6B35;    /* Naranja Hot Dog */
+  --secondary: #FFA500;  /* Naranja claro */
+  --accent: #8B4513;     /* Marrón mostaza */
+  --light: #FFF8F0;      /* Fondo claro */
+  --dark: #2C1810;       /* Texto oscuro */
+  --success: #28a745;    /* Verde para acciones */
+}
+
+/* Personalización de Bootstrap */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  
+  &:hover {
+    background-color: #e55a2b;
+    border-color: #e55a2b;
+  }
+}
+
+.text-primary {
+  color: var(--primary) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary) !important;
+}

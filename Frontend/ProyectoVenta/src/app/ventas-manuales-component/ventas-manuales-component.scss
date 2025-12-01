@@ -1,0 +1,68 @@
+.ventas-manuales-section {
+  .productos-disponibles-card, .carrito-venta-card {
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+  }
+
+  .producto-item, .carrito-item {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: #ffc107 !important;
+      transform: translateY(-2px);
+    }
+  }
+
+  .carrito-items {
+    scrollbar-width: thin;
+    scrollbar-color: #ffc107 #343a40;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #343a40;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #ffc107;
+      border-radius: 3px;
+    }
+  }
+
+  // Estilos para filtros
+  .btn-group .btn.active {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+  }
+
+  // Animación para items nuevos
+  .carrito-item {
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .ventas-manuales-section {
+    .container {
+      padding: 0 15px;
+    }
+    
+    .productos-lista, .carrito-items {
+      max-height: 300px !important;
+    }
+  }
+}

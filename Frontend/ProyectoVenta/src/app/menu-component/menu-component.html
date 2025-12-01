@@ -1,0 +1,100 @@
+<section class="menu-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <div class="text-center mb-4">
+      <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+        <h5 class="mb-0 fw-bold">🍽️ MENÚ</h5>
+      </div>
+      <h2 class="fw-bold text-warning">Nuestros Productos</h2>
+      <p class="opacity-90 mb-0">Selecciona un producto para personalizarlo</p>
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+    <div class="text-center py-4">
+      <div class="spinner-border spinner-border-sm text-warning" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2 opacity-90 small">Cargando menú...</p>
+    </div>
+    }
+
+    <!-- Error -->
+    @if (errorMessage && !loading) {
+    <div class="alert alert-danger text-center mb-3 py-2">
+      <div class="d-flex align-items-center justify-content-center">
+        <span class="text-danger me-2">⚠️</span>
+        <span class="small">{{ errorMessage }}</span>
+      </div>
+      <button class="btn btn-outline-warning btn-sm mt-1" (click)="cargarMenu()">Reintentar</button>
+    </div>
+    }
+
+    <!-- Menú por Categorías -->
+    @if (!loading && !errorMessage) { @for (tipo of getTiposUnicos(); track tipo) {
+    <div class="categoria-menu mb-4">
+      <!-- Header de Categoría  -->
+      <div class="categoria-header mb-3">
+        <h3 class="text-warning fw-bold border-bottom border-warning pb-1 h5">
+          @switch (tipo) { @case ('hotdog') { 🌭 Hot Dogs } @case ('torta') { 🥪 Tortas } @case
+          ('taco') { 🌮 Tacos } @default { {{ tipo | titlecase }} } }
+        </h3>
+      </div>
+
+      <!-- Grid de Productos-->
+      <div class="row g-3">
+        @for (producto of getProductosPorTipo(tipo); track producto.id) {
+        <div class="col-md-6 col-lg-4">
+          <div
+            class="producto-card bg-dark border border-secondary rounded-2 h-100 d-flex flex-column"
+          >
+<!-- Imagen del Producto -->
+<div class="producto-imagen-container">
+  <img
+    [src]="getProductImageUrl(producto.imagenUrl)"
+    [alt]="producto.nombre"
+    class="producto-image rounded-top"
+    (error)="onImageError($event)"
+  />
+</div>
+
+            <!-- Contenido-->
+            <div class="producto-content p-2 flex-grow-1 d-flex flex-column">
+              <!-- Nombre y Precio  -->
+              <div class="producto-header mb-1">
+                <h6 class="text-warning fw-bold mb-0">{{ producto.nombre }}</h6>
+                <h5 class="text-success fw-bold mb-0">
+                  Q{{ producto.precioBase | number : '1.2-2' }}
+                </h5>
+              </div>
+              @if (producto.descripcion) {
+              <p class="producto-descripcion text-white opacity-90 small mb-2 flex-grow-1">
+                {{ producto.descripcion }}
+              </p>
+              }
+              <button
+                class="btn btn-warning fw-bold w-100 mt-auto py-1 small"
+                (click)="seleccionarProducto(producto)"
+              >
+                🛒 Seleccionar
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      @if (getProductosPorTipo(tipo).length === 0) {
+      <div class="text-center py-3 border border-dashed border-warning rounded">
+        <span class="opacity-90 small">No hay productos en esta categoría</span>
+      </div>
+      }
+    </div>
+    } } @if (!loading && !errorMessage && productos.length === 0) {
+    <div class="text-center py-4">
+      <div class="alert alert-warning py-2">
+        <h6 class="mb-2">📭 Menú Vacío</h6>
+        <p class="mb-0 small">No hay productos disponibles.</p>
+      </div>
+    </div>
+    }
+  </div>
+</section>

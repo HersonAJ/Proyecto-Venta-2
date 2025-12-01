@@ -1,0 +1,55 @@
+.anuncios-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #1a1a1a;
+  border-top: 2px solid #ffc107;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.ad-container {
+  width: 728px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mock-ad {
+  width: 728px;
+  height: 90px;
+  background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+  border: 2px dashed #ffc107;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffc107;
+}
+
+.mock-ad-content {
+  text-align: center;
+}
+
+.mock-ad-content span {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.mock-ad-content small {
+  color: #ccc;
+  font-size: 12px;
+}
+
+// Para móviles
+@media (max-width: 768px) {
+  .ad-container, .mock-ad {
+    width: 320px;
+    height: 100px;
+  }
+}

@@ -1,0 +1,195 @@
+<section class="canjear-promo-section bg-dark text-white min-vh-100 py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        
+        <!-- Card Principal -->
+        <div class="promo-card bg-dark border border-warning rounded-4 p-4 shadow-lg">
+          
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <div class="logo-placeholder bg-warning text-dark rounded p-3 d-inline-block mb-3">
+              <h4 class="mb-0 fw-bold">🎁 CANJEAR PROMOCIONES</h4>
+            </div>
+            <h2 class="fw-bold text-warning">Gestión de Promociones</h2>
+            <p class="opacity-90 mb-0">Busca usuarios y canjea sus promociones disponibles</p>
+          </div>
+
+          <!-- Búsqueda de Usuario -->
+          <div class="busqueda-section mb-4">
+            <h4 class="text-warning fw-bold mb-3">🔍 Buscar Usuario Por Nombre</h4>
+            
+            <div class="input-group">
+              <input 
+                type="text" 
+                class="form-control bg-dark text-white border-warning" 
+                placeholder="Ingresa el ID del usuario"
+                [(ngModel)]="criterioBusqueda"
+                (keyup.enter)="buscarUsuarios()"
+              >
+              <button 
+                class="btn btn-warning fw-bold" 
+                type="button"
+                (click)="buscarUsuarios()"
+                [disabled]="buscando"
+              >
+                @if (!buscando) {
+                  <span>Buscar</span>
+                }
+                @if (buscando) {
+                  <span>
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Buscando...
+                  </span>
+                }
+              </button>
+            </div>
+
+            @if (errorBusqueda) {
+              <div class="alert alert-danger border border-danger rounded p-2 mt-2">
+                <div class="d-flex align-items-center">
+                  <span class="text-danger me-2">⚠️</span>
+                  <span class="text-light small">{{ errorBusqueda }}</span>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Resultados de Búsqueda -->
+          @if (usuarioEncontrado) {
+            <div class="usuario-info-section mb-4 p-3 bg-dark bg-opacity-50 rounded-3 border border-warning">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="text-warning fw-bold mb-0">👤 Información del Usuario</h5>
+                <button class="btn btn-sm btn-outline-warning" (click)="limpiarBusqueda()">
+                  ✕ Nueva Búsqueda
+                </button>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="info-item mb-2">
+                    <strong class="text-warning">Nombre:</strong>
+                    <span class="text-light ms-2">{{ usuarioEncontrado.nombre }}</span>
+                  </div>
+                  <div class="info-item mb-2">
+                    <strong class="text-warning">Email:</strong>
+                    <span class="text-light ms-2">{{ usuarioEncontrado.email }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-item mb-2">
+                    <strong class="text-warning">ID Usuario:</strong>
+                    <span class="text-light ms-2">{{ usuarioEncontrado.id }}</span>
+                  </div>
+                  <div class="info-item mb-2">
+                    <strong class="text-warning">Promociones Canjeadas:</strong>
+                    <span class="text-light ms-2">{{ usuarioEncontrado.promocionesCanjeadas || 0 }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Estado de Promociones -->
+              <div class="promociones-status mt-3 p-3 rounded" 
+                   [class.bg-success]="usuarioEncontrado.promocionesPendientes > 0"
+                   [class.bg-secondary]="usuarioEncontrado.promocionesPendientes === 0">
+                <div class="text-center">
+                  <h4 class="fw-bold mb-1">
+                    {{ usuarioEncontrado.promocionesPendientes }}
+                  </h4>
+                  <small class="opacity-90">
+                    Promociones Disponibles para Canjear
+                  </small>
+                </div>
+              </div>
+
+              <!-- Progreso Actual -->
+              <div class="progreso-section mt-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <small class="opacity-90">Progreso para próxima promoción:</small>
+                  <small class="text-warning fw-bold">{{ usuarioEncontrado.promocionActual }}/7</small>
+                </div>
+                <div class="progress" style="height: 6px; background: rgba(255, 193, 7, 0.2);">
+                  <div 
+                    class="progress-bar bg-warning" 
+                    [style.width]="(usuarioEncontrado.promocionActual / 7 * 100) + '%'"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Sección de Canje -->
+          @if (usuarioEncontrado && usuarioEncontrado.promocionesPendientes > 0) {
+            <div class="canje-section p-3 bg-warning bg-opacity-10 rounded-3 border border-warning">
+              <h5 class="text-warning fw-bold mb-3">🔄 Canjear Promoción</h5>
+
+              <!-- Selector de Cantidad -->
+              <div class="mb-3">
+                <label class="form-label text-warning fw-bold">Cantidad a canjear:</label>
+                <select 
+                  class="form-select bg-dark text-white border-warning"
+                  [(ngModel)]="cantidadCanjear"
+                >
+                  @for (cantidad of opcionesCantidad; track cantidad) {
+                    <option [value]="cantidad">{{ cantidad }} promoción(es)</option>
+                  }
+                </select>
+                <small class="opacity-90">
+                  Máximo: {{ usuarioEncontrado.promocionesPendientes }} disponible(s)
+                </small>
+              </div>
+
+              <!-- Mensajes -->
+              @if (mensajeExito) {
+                <div class="alert alert-success border border-success rounded p-2 mb-3">
+                  <div class="d-flex align-items-center">
+                    <span class="text-success me-2">✅</span>
+                    <span class="text-light">{{ mensajeExito }}</span>
+                  </div>
+                </div>
+              }
+
+              @if (errorCanje) {
+                <div class="alert alert-danger border border-danger rounded p-2 mb-3">
+                  <div class="d-flex align-items-center">
+                    <span class="text-danger me-2">⚠️</span>
+                    <span class="text-light">{{ errorCanje }}</span>
+                  </div>
+                </div>
+              }
+
+              <!-- Botón Canjear -->
+              <button 
+                class="btn btn-warning w-100 fw-bold"
+                (click)="canjearPromocion()"
+                [disabled]="canjeando || !puedeCanjear"
+              >
+                @if (!canjeando) {
+                  <span>🎁 Canjear {{ cantidadCanjear }} Promoción(es)</span>
+                }
+                @if (canjeando) {
+                  <span>
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Canjeando...
+                  </span>
+                }
+              </button>
+            </div>
+          }
+
+          @if (usuarioEncontrado && usuarioEncontrado.promocionesPendientes === 0) {
+            <div class="alert alert-info border border-info rounded p-3 text-center">
+              <div class="d-flex align-items-center justify-content-center">
+                <span class="text-info me-2">ℹ️</span>
+                <span class="text-light">
+                  Este usuario no tiene promociones disponibles para canjear
+                </span>
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

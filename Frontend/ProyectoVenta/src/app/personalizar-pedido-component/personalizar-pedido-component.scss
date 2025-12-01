@@ -1,0 +1,23 @@
+.personalizar-section {
+  .personalizar-card {
+    transition: box-shadow 0.3s ease;
+    
+    &:hover {
+      box-shadow: 0 8px 25px rgba(255, 193, 7, 0.15);
+    }
+  }
+
+  .producto-image {
+    border: 2px solid #ffc107;
+  }
+
+  .form-check-input:checked {
+    background-color: #ffc107;
+    border-color: #ffc107;
+  }
+
+  .form-check-input:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+  }
+}

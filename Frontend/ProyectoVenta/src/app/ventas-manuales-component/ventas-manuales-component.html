@@ -1,0 +1,217 @@
+<section class="ventas-manuales-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-12">
+        
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+            <h5 class="mb-0 fw-bold">💰 VENTAS MANUALES</h5>
+          </div>
+          <h2 class="fw-bold text-warning">Registro de Ventas en Mostrador</h2>
+          <p class="opacity-90 mb-0">Registra ventas directas a clientes sin pedido del sistema</p>
+        </div>
+
+        <!-- Mensajes -->
+        @if (mensajeExito) {
+          <div class="alert alert-success border border-success rounded p-3 mb-4">
+            <div class="d-flex align-items-center">
+              <span class="text-success me-2">✅</span>
+              <span class="text-light">{{ mensajeExito }}</span>
+            </div>
+          </div>
+        }
+
+        @if (errorMessage) {
+          <div class="alert alert-danger border border-danger rounded p-3 mb-4">
+            <div class="d-flex align-items-center">
+              <span class="text-danger me-2">⚠️</span>
+              <span class="text-light">{{ errorMessage }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Loading General -->
+        @if (loading && productos.length === 0) {
+          <div class="text-center py-5">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 opacity-90">Cargando productos...</p>
+          </div>
+        }
+
+        <!-- Contenido Principal -->
+        @if (!loading || productos.length > 0) {
+          <div class="row">
+            
+            <!-- Columna Izquierda: Productos Disponibles -->
+            <div class="col-lg-6 mb-4">
+              <div class="productos-disponibles-card bg-dark border border-warning rounded-3 p-4 h-100">
+                <h4 class="text-warning fw-bold mb-3">🍽️ Productos Disponibles</h4>
+
+                <!-- Lista de Productos -->
+                <div class="productos-lista" style="max-height: 500px; overflow-y: auto;">
+                  @for (producto of productos; track producto.id) {
+                    <div class="producto-item bg-dark border border-secondary rounded p-3 mb-2" 
+                         [attr.data-tipo]="producto.tipo">
+                      <div class="row align-items-center">
+                        <div class="col-8">
+                          <h6 class="text-white fw-bold mb-1">{{ producto.nombre }}</h6>
+                          <small class="text-warning opacity-90">{{ producto.descripcion }}</small>
+                          <div class="mt-2">
+                            <span class="badge bg-warning text-dark">{{ producto.tipo }}</span>
+                            <span class="badge bg-success ms-2">Q{{ producto.precioBase | number:'1.2-2' }}</span>
+                          </div>
+                        </div>
+                        <div class="col-4 text-end">
+                          <button 
+                            class="btn btn-warning btn-sm fw-bold"
+                            (click)="agregarProducto(producto)"
+                          >
+                            ➕ Agregar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                @if (productos.length === 0 && !loading) {
+                  <div class="text-center py-4">
+                    <span class="display-1 text-warning opacity-50">📭</span>
+                    <p class="text-warning mt-2">No hay productos disponibles</p>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Carrito de Venta -->
+            <div class="col-lg-6">
+              <div class="carrito-venta-card bg-dark border border-warning rounded-3 p-4 h-100">
+                <h4 class="text-warning fw-bold mb-3">🛒 Carrito de Venta</h4>
+                
+                <!-- Resumen de Venta -->
+                <div class="resumen-venta bg-warning bg-opacity-10 border border-warning rounded p-3 mb-3">
+                  <div class="row text-center">
+                    <div class="col-6">
+                      <small class="text-white opacity-90 d-block">Productos</small>
+                      <strong class="text-warning fs-5">{{ itemsVenta.length }}</strong>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-white opacity-90 d-block">Total</small>
+                      <strong class="text-success fs-5">Q{{ totalVenta | number:'1.2-2' }}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Items del Carrito -->
+                <div class="carrito-items mb-4" style="max-height: 400px; overflow-y: auto;">
+                  @if (itemsVenta.length === 0) {
+                    <div class="text-center py-4">
+                      <span class="display-1 text-warning opacity-50">🛒</span>
+                      <p class="text-warning mt-2">El carrito está vacío</p>
+                      <small class="opacity-90">Agrega productos desde la lista</small>
+                    </div>
+                  }
+
+                  @for (item of itemsVenta; track item.id) {
+                    <div class="carrito-item bg-dark border border-secondary rounded p-3 mb-2">
+                      <div class="row align-items-center">
+                        <div class="col-6">
+                          <h6 class="text-white fw-bold mb-1">{{ item.nombre }}</h6>
+                          <small class="text-warning">Q{{ item.precioUnitario | number:'1.2-2' }} c/u</small>
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group input-group-sm">
+                            <button 
+                              class="btn btn-outline-warning" 
+                              type="button"
+                              (click)="modificarCantidad(item, item.cantidad - 1)"
+                            >
+                              −
+                            </button>
+                            <input 
+                              type="number" 
+                              class="form-control bg-dark text-white text-center border-warning"
+                              [value]="item.cantidad"
+                              min="1"
+                              (change)="modificarCantidad(item, $any($event.target).valueAsNumber)"
+                            >
+                            <button 
+                              class="btn btn-outline-warning" 
+                              type="button"
+                              (click)="modificarCantidad(item, item.cantidad + 1)"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        <div class="col-2 text-end">
+                          <button 
+                            class="btn btn-outline-danger btn-sm"
+                            (click)="eliminarProducto(item.id)"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col-12">
+                          <small class="text-success fw-bold">
+                            Subtotal: Q{{ item.subtotal | number:'1.2-2' }}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <!-- Acciones -->
+                <div class="acciones-venta">
+                  @if (itemsVenta.length > 0) {
+                    <div class="d-grid gap-2">
+                      <button 
+                        class="btn btn-success btn-lg fw-bold"
+                        (click)="registrarVenta()"
+                        [disabled]="loading"
+                      >
+                        @if (!loading) {
+                          <span>💰 Registrar Venta - Q{{ totalVenta | number:'1.2-2' }}</span>
+                        }
+                        @if (loading) {
+                          <span>
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            Registrando...
+                          </span>
+                        }
+                      </button>
+                      
+                      <button 
+                        class="btn btn-outline-warning"
+                        (click)="limpiarVenta()"
+                        [disabled]="loading"
+                      >
+                        🗑️ Limpiar Carrito
+                      </button>
+                    </div>
+                  }
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        }
+
+        <!-- Botón Volver -->
+        <div class="text-center mt-4">
+          <button class="btn btn-outline-warning" routerLink="/panel-control">
+            ← Volver al Panel de Control
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

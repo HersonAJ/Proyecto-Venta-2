@@ -1,0 +1,279 @@
+<section class="crear-producto-section bg-dark text-white min-vh-100 py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8">
+        <!-- Card de Crear Producto -->
+        <div class="crear-producto-card bg-dark border border-warning rounded-4 p-4 shadow-lg">
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <div class="logo-placeholder bg-warning text-dark rounded p-3 d-inline-block mb-3">
+              <h4 class="mb-0 fw-bold">🍽️ CREAR PRODUCTO</h4>
+            </div>
+            <h2 class="fw-bold text-warning">Nuevo Producto</h2>
+            <p class="opacity-90">Agrega un nuevo producto al menú</p>
+          </div>
+
+          <!-- Mensajes -->
+          @if (mensajeExito) {
+          <div class="alert alert-success border border-success rounded p-3 mb-3">
+            <div class="d-flex align-items-center">
+              <span class="text-success me-2">✅</span>
+              <span class="text-light">{{ mensajeExito }}</span>
+            </div>
+          </div>
+          } @if (errorMessage) {
+          <div class="alert alert-danger border border-danger rounded p-3 mb-3">
+            <div class="d-flex align-items-center">
+              <span class="text-danger me-2">⚠️</span>
+              <span class="text-light">{{ errorMessage }}</span>
+            </div>
+          </div>
+          }
+
+          <!-- Formulario -->
+          <form (ngSubmit)="crearProducto()" #productoForm="ngForm">
+            <!-- Información Básica -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h4 class="text-warning fw-bold mb-3">📋 Información Básica</h4>
+
+                <!-- Nombre -->
+                <div class="mb-3">
+                  <label for="nombre" class="form-label text-warning fw-bold"
+                    >🍴 Nombre del Producto</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control bg-dark text-white border-warning"
+                    id="nombre"
+                    name="nombre"
+                    [(ngModel)]="producto.nombre"
+                    placeholder="Ej: Hot Dog Clásico, Torta Especial"
+                    required
+                    #nombre="ngModel"
+                    [class.is-invalid]="nombre.invalid && nombre.touched"
+                  />
+                  @if (nombre.invalid && nombre.touched) {
+                  <div class="invalid-feedback">El nombre del producto es requerido</div>
+                  }
+                </div>
+
+                <!-- Tipo -->
+                <div class="mb-3">
+                  <label for="tipo" class="form-label text-warning fw-bold"
+                    >📦 Tipo de Producto</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control bg-dark text-white border-warning"
+                    id="tipo"
+                    name="tipo"
+                    [(ngModel)]="producto.tipo"
+                    placeholder="Ej: hotdog, torta, bebida, postre..."
+                    required
+                    #tipo="ngModel"
+                    [class.is-invalid]="tipo.invalid && tipo.touched"
+                  />
+                  @if (tipo.invalid && tipo.touched) {
+                  <div class="invalid-feedback">El tipo de producto es requerido</div>
+                  }
+                </div>
+
+                <!-- Precio -->
+                <div class="mb-3">
+                  <label for="precio" class="form-label text-warning fw-bold">💰 Precio Base</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-dark text-warning border-warning">Q</span>
+                    <input
+                      type="number"
+                      class="form-control bg-dark text-white border-warning"
+                      id="precio"
+                      name="precioBase"
+                      [(ngModel)]="producto.precioBase"
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                      required
+                      #precio="ngModel"
+                      [class.is-invalid]="precio.invalid && precio.touched"
+                    />
+                  </div>
+                  @if (precio.invalid && precio.touched) {
+                  <div class="invalid-feedback">El precio es requerido y debe ser mayor a 0</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <!-- Tiempo Preparación -->
+                <div class="mb-3">
+                  <label for="tiempoPreparacion" class="form-label text-warning fw-bold"
+                    >⏱️ Tiempo de Preparación (minutos)</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control bg-dark text-white border-warning"
+                    id="tiempoPreparacion"
+                    name="tiempoPreparacion"
+                    [(ngModel)]="producto.tiempoPreparacion"
+                    placeholder="10"
+                    min="1"
+                  />
+                </div>
+
+                <!-- Selector de Imagen -->
+                <div class="mb-3">
+                  <label for="imagenUrl" class="form-label text-warning fw-bold"
+                    >🖼️ Seleccionar Imagen</label
+                  >
+                  <select
+                    class="form-control bg-dark text-white border-warning"
+                    id="imagenUrl"
+                    name="imagenUrl"
+                    [(ngModel)]="producto.imagenUrl"
+                  >
+                    <option value="">-- Selecciona una imagen --</option>
+                    <option *ngFor="let imagen of imagenesDisponibles" [value]="imagen">
+                      {{ imagen }}
+                    </option>
+                  </select>
+
+                  <!-- Previsualización -->
+                  @if (producto.imagenUrl) {
+                  <div class="mt-2">
+                    <img
+                      [src]="'/assets/images/productos/' + producto.imagenUrl"
+                      [alt]="producto.imagenUrl"
+                      class="img-thumbnail border-warning"
+                      style="max-width: 150px; max-height: 150px"
+                    />
+                    <small class="text-muted d-block mt-1">Vista previa</small>
+                  </div>
+                  }
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-3">
+                  <label for="descripcion" class="form-label text-warning fw-bold"
+                    >📝 Descripción (opcional)</label
+                  >
+                  <textarea
+                    class="form-control bg-dark text-white border-warning"
+                    id="descripcion"
+                    name="descripcion"
+                    [(ngModel)]="producto.descripcion"
+                    placeholder="Describe el producto..."
+                    rows="3"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ingredientes -->
+            <div class="mb-4">
+              <h4 class="text-warning fw-bold mb-3">🥬 Ingredientes</h4>
+              <p class="opacity-90 mb-3">Agrega los ingredientes que componen este producto</p>
+
+              <!-- Agregar Ingrediente -->
+              <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                  <input
+                    type="text"
+                    class="form-control bg-dark text-white border-warning"
+                    placeholder="Nombre del ingrediente"
+                    [(ngModel)]="nuevoIngrediente.nombre"
+                    name="nuevoIngredienteNombre"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="esObligatorio"
+                      [(ngModel)]="nuevoIngrediente.esObligatorio"
+                      name="esObligatorio"
+                    />
+                    <label class="form-check-label text-white" for="esObligatorio">
+                      Obligatorio
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning w-100"
+                    (click)="agregarIngrediente()"
+                  >
+                    ➕ Agregar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Lista de Ingredientes Agregados -->
+              @if (ingredientesAgregados.length > 0) {
+              <div class="ingredientes-list">
+                <h6 class="text-warning mb-2">Ingredientes agregados:</h6>
+                <div class="row g-2">
+                  @for (ingrediente of ingredientesAgregados; track $index; let i = $index) {
+                  <div class="col-md-6">
+                    <div
+                      class="d-flex align-items-center justify-content-between bg-dark border border-secondary rounded p-2"
+                    >
+                      <div>
+                        <span class="text-white">{{ ingrediente.nombre }}</span>
+                        @if (ingrediente.esObligatorio) {
+                        <span class="badge bg-warning text-dark ms-2">Obligatorio</span>
+                        }
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="eliminarIngrediente(i)"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+              } @else {
+              <div class="text-center py-3 border border-dashed border-warning rounded">
+                <span class="opacity-90">No hay ingredientes agregados</span>
+              </div>
+              }
+            </div>
+
+            <!-- Botones -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button
+                type="button"
+                class="btn btn-outline-secondary me-md-2"
+                (click)="limpiarFormulario()"
+                [disabled]="loading"
+              >
+                🗑️ Limpiar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-warning fw-bold"
+                [disabled]="productoForm.invalid || loading || ingredientesAgregados.length === 0"
+              >
+                @if (!loading) {
+                <span>🚀 Crear Producto</span>
+                } @if (loading) {
+                <span>
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Creando...
+                </span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,131 @@
+<!-- login.component.html -->
+
+<section class="login-section bg-dark text-white min-vh-100 d-flex align-items-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <!-- Card de Login -->
+        <div class="login-card bg-dark border border-warning rounded-4 p-4 shadow-lg">
+          <!-- Logo -->
+          <div class="text-center mb-4">
+            <div class="logo-placeholder bg-warning text-dark rounded p-3 d-inline-block mb-3">
+              <h4 class="mb-0 fw-bold">🌭 HOT DOGS & TORTAS</h4>
+            </div>
+            <h2 class="fw-bold text-warning">Iniciar Sesión</h2>
+            <p class="opacity-90">Accede a tu cuenta para continuar</p>
+          </div>
+
+          <!-- Mensaje de error -->
+          @if (errorMessage) {
+          <div class="error-message-custom bg-dark border border-danger rounded p-3 mb-3">
+            <div class="d-flex align-items-center">
+              <span class="text-danger me-2">⚠️</span>
+              <span class="text-light">{{ errorMessage }}</span>
+            </div>
+          </div>
+          }
+
+          <!-- Formulario -->
+          <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label text-warning fw-bold"
+                >📧 Correo Electrónico</label
+              >
+              <input
+                type="email"
+                class="form-control bg-dark text-white border-warning"
+                id="email"
+                name="email"
+                [(ngModel)]="loginData.email"
+                placeholder="tu@email.com"
+                required
+                #email="ngModel"
+                [class.is-invalid]="email.invalid && email.touched"
+              />
+              @if (email.invalid && email.touched) {
+              <div class="invalid-feedback">Por favor ingresa un correo válido</div>
+              }
+            </div>
+
+            <!-- Contraseña -->
+            <div class="mb-4">
+              <label for="password" class="form-label text-warning fw-bold">🔒 Contraseña</label>
+              <input
+                type="password"
+                class="form-control bg-dark text-white border-warning"
+                id="password"
+                name="password"
+                [(ngModel)]="loginData.password"
+                placeholder="••••••••"
+                required
+                minlength="6"
+                #password="ngModel"
+                [class.is-invalid]="password.invalid && password.touched"
+              />
+              @if (password.invalid && password.touched) {
+              <div class="invalid-feedback">
+                @if (password.errors?.['required']) {
+                <div>La contraseña es requerida</div>
+                } @if (password.errors?.['minlength']) {
+                <div>Mínimo 6 caracteres</div>
+                }
+              </div>
+              }
+            </div>
+
+            <!-- Botón de Login -->
+            <button
+              type="submit"
+              class="btn btn-warning w-100 py-3 fw-bold mb-3"
+              [disabled]="loginForm.invalid || loading"
+            >
+              @if (!loading) {
+              <span>🎯 Iniciar Sesión</span>
+              } @if (loading) {
+              <span>
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Iniciando...
+              </span>
+              }
+            </button>
+
+            <!-- Enlaces adicionales -->
+            <div class="text-center">
+              <a href="#" class="text-warning text-decoration-none small">
+                ¿Olvidaste tu contraseña?
+              </a>
+              <div class="mt-2">
+                <span class="opacity-90">¿No tienes cuenta? </span>
+                <a routerLink="/registro" class="text-warning text-decoration-none fw-bold">
+                  Regístrate aquí
+                </a>
+              </div>
+            </div>
+          </form>
+
+          <!-- Separador -->
+          <div class="text-center my-4">
+            <hr class="border-warning opacity-50" />
+            <span class="bg-dark px-3 opacity-90">O continúa como</span>
+          </div>
+
+          <!-- Botón de invitado -->
+          <button class="btn btn-outline-warning w-100" (click)="continueAsGuest()">
+            👤 Invitado
+          </button>
+        </div>
+
+        <!-- Info adicional -->
+        <div class="text-center mt-4">
+          <p class="small opacity-75">
+            Al iniciar sesión aceptas nuestros
+            <a href="#" class="text-warning">Términos de Servicio</a>
+            y
+            <a href="#" class="text-warning">Política de Privacidad</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

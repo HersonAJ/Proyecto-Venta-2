@@ -1,0 +1,65 @@
+.menu-section {
+  .producto-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 0.9rem;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 193, 7, 0.1);
+      border-color: #ffc107 !important;
+    }
+  }
+/*
+  .producto-imagen-container {
+    height: 120px; 
+    overflow: hidden;
+    
+    .producto-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .producto-imagen-placeholder {
+      height: 120px; 
+      width: 100%;
+    }
+  }*/
+
+  .producto-descripcion {
+    min-height: 30px; 
+    font-size: 0.8rem;
+  }
+
+  .ingredientes-list {
+    max-height: 60px; 
+    overflow-y: auto;
+  }
+
+  .categoria-header {
+    border-bottom: 1px solid #ffc107; 
+  }
+}
+.producto-imagen-container {
+  width: 100%;
+  height: 200px; 
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.producto-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center;
+}
+
+.producto-card.hotdog .producto-image {
+  object-position: top; 
+}
+
+.producto-card.torta .producto-image {
+  object-position: center; 
+}

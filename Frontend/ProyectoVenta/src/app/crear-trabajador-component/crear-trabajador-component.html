@@ -1,0 +1,207 @@
+<section class="crear-trabajador-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        
+        <!-- Card de Crear Trabajador -->
+        <div class="crear-trabajador-card bg-dark border border-warning rounded-3 p-4">
+          
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+              <h5 class="mb-0 fw-bold">👥 CREAR TRABAJADOR</h5>
+            </div>
+            <h2 class="fw-bold text-warning">Nuevo Trabajador</h2>
+            <p class="opacity-90 mb-0">Agrega un nuevo trabajador al sistema</p>
+          </div>
+
+          <!-- Mensajes -->
+          @if (mensajeExito) {
+            <div class="alert alert-success border border-success rounded p-3 mb-3">
+              <div class="d-flex align-items-center">
+                <span class="text-success me-2">✅</span>
+                <span class="text-light">{{ mensajeExito }}</span>
+              </div>
+            </div>
+          }
+
+          @if (errorMessage) {
+            <div class="alert alert-danger border border-danger rounded p-3 mb-3">
+              <div class="d-flex align-items-center">
+                <span class="text-danger me-2">⚠️</span>
+                <span class="text-light">{{ errorMessage }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Formulario -->
+          <form (ngSubmit)="crearTrabajador()" #trabajadorForm="ngForm">
+            
+            <!-- Información Personal -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h4 class="text-warning fw-bold mb-3">👤 Información Personal</h4>
+                
+                <!-- Nombre -->
+                <div class="mb-3">
+                  <label for="nombre" class="form-label text-warning fw-bold">Nombre Completo</label>
+                  <input 
+                    type="text" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="nombre"
+                    name="nombre"
+                    [(ngModel)]="trabajador.nombre"
+                    placeholder="Ej: Juan Pérez"
+                    required
+                    #nombre="ngModel"
+                    [class.is-invalid]="nombre.invalid && nombre.touched"
+                  >
+                  @if (nombre.invalid && nombre.touched) {
+                    <div class="invalid-feedback">
+                      El nombre es requerido
+                    </div>
+                  }
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                  <label for="email" class="form-label text-warning fw-bold">📧 Email</label>
+                  <input 
+                    type="email" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="email"
+                    name="email"
+                    [(ngModel)]="trabajador.email"
+                    placeholder="trabajador@ejemplo.com"
+                    required
+                    #email="ngModel"
+                    [class.is-invalid]="(email.invalid && email.touched) || (errorMessage && errorMessage.includes('email'))"
+                  >
+                  @if (email.invalid && email.touched) {
+                    <div class="invalid-feedback">
+                      El email es requerido
+                    </div>
+                  }
+                </div>
+
+                <!-- Teléfono -->
+                <div class="mb-3">
+                  <label for="telefono" class="form-label text-warning fw-bold">📞 Teléfono (Opcional)</label>
+                  <input 
+                    type="tel" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="telefono"
+                    name="telefono"
+                    [(ngModel)]="trabajador.telefono"
+                    placeholder="12345678"
+                  >
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <h4 class="text-warning fw-bold mb-3">🔐 Credenciales</h4>
+
+                <!-- Contraseña -->
+                <div class="mb-3">
+                  <label for="password" class="form-label text-warning fw-bold">Contraseña</label>
+                  <div class="input-group">
+                    <input 
+                      [type]="mostrarPassword ? 'text' : 'password'" 
+                      class="form-control bg-dark text-white border-warning" 
+                      id="password"
+                      name="password"
+                      [(ngModel)]="trabajador.password"
+                      placeholder="Mínimo 6 caracteres"
+                      required
+                      minlength="6"
+                      #password="ngModel"
+                      [class.is-invalid]="password.invalid && password.touched"
+                    >
+                    <button 
+                      class="btn btn-outline-warning" 
+                      type="button"
+                      (click)="toggleMostrarPassword()"
+                    >
+                      {{ mostrarPassword ? '🙈' : '👁️' }}
+                    </button>
+                  </div>
+                  @if (password.invalid && password.touched) {
+                    <div class="invalid-feedback">
+                      La contraseña debe tener al menos 6 caracteres
+                    </div>
+                  }
+                  @if (trabajador.password) {
+                    <small class="{{ getPasswordStrengthClass() }}">
+                      Seguridad: {{ getPasswordStrength() }}
+                    </small>
+                  }
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div class="mb-3">
+                  <label for="confirmarPassword" class="form-label text-warning fw-bold">Confirmar Contraseña</label>
+                  <input 
+                    [type]="mostrarPassword ? 'text' : 'password'" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="confirmarPassword"
+                    name="confirmarPassword"
+                    [(ngModel)]="confirmarPassword"
+                    placeholder="Repite la contraseña"
+                    required
+                    #confirmarPasswordInput="ngModel"
+                    [class.is-invalid]="(confirmarPasswordInput.invalid && confirmarPasswordInput.touched) || (trabajador.password !== confirmarPassword && confirmarPassword)"
+                  >
+                  @if (confirmarPasswordInput.invalid && confirmarPasswordInput.touched) {
+                    <div class="invalid-feedback">
+                      Confirma la contraseña
+                    </div>
+                  }
+                  @if (trabajador.password !== confirmarPassword && confirmarPassword) {
+                    <div class="text-danger small">
+                      Las contraseñas no coinciden
+                    </div>
+                  }
+                </div>
+
+                <!-- Información del Rol -->
+                <div class="alert alert-info border border-info">
+                  <small>
+                    <strong>💼 Rol: Trabajador</strong><br>
+                    Este usuario tendrá acceso al panel de control para gestionar pedidos.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary me-md-2"
+                (click)="limpiarFormulario()"
+                [disabled]="loading"
+              >
+                🗑️ Limpiar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-warning fw-bold"
+                [disabled]="trabajadorForm.invalid || loading || trabajador.password !== confirmarPassword"
+              >
+                @if (!loading) {
+                  <span>👥 Crear Trabajador</span>
+                }
+                @if (loading) {
+                  <span>
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Creando...
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

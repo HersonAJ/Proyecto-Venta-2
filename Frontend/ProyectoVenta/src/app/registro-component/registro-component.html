@@ -1,0 +1,262 @@
+<section class="register-section bg-dark text-white min-vh-100 d-flex align-items-center py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        
+        <!-- Card de Registro -->
+        <div class="register-card bg-dark border border-warning rounded-4 p-4 shadow-lg">
+          
+          <!-- Logo y título -->
+          <div class="text-center mb-4">
+            <div class="logo-placeholder bg-warning text-dark rounded p-3 d-inline-block mb-3">
+              <h4 class="mb-0 fw-bold">🌭 HOT DOGS & TORTAS</h4>
+            </div>
+            
+            <!-- Título dinámico -->
+            @if (!registroExitoso) {
+              <h2 class="fw-bold text-warning">Crear Cuenta</h2>
+              <p class="opacity-90">Únete a nuestra comunidad</p>
+            }
+          </div>
+
+          <!-- Mensaje de error -->
+          @if (errorMessage) {
+            <div class="error-message-custom bg-dark border border-danger rounded p-3 mb-3">
+              <div class="d-flex align-items-center">
+                <span class="text-danger me-2">⚠️</span>
+                <span class="text-light">{{ errorMessage }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Mensaje de éxito -->
+          @if (registroExitoso) {
+            <div class="success-message-custom bg-dark border border-success rounded-4 p-4 text-center">
+              <div class="mb-3">
+                <span class="text-success fs-1">✅</span>
+              </div>
+              <h3 class="text-success fw-bold mb-3">¡Registro Exitoso!</h3>
+              <p class="text-light mb-4">{{ mensajeExito }}</p>
+              
+              <div class="d-grid gap-2">
+                <button 
+                  class="btn btn-success py-2 fw-bold"
+                  (click)="irAInicio()"
+                >
+                  🚀 Ir a Inicio
+                </button>
+                <button 
+                  class="btn btn-outline-warning py-2"
+                  (click)="volverARegistro()"
+                >
+                  📝 Crear otra cuenta
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Formulario de registro (solo mostrar si no hay éxito) -->
+          @if (!registroExitoso) {
+            <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+              <div class="row">
+                <!-- Nombre Completo -->
+                <div class="col-md-6 mb-3">
+                  <label for="nombre" class="form-label text-warning fw-bold">👤 Nombre Completo</label>
+                  <input 
+                    type="text" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="nombre"
+                    name="nombre"
+                    [(ngModel)]="registerData.nombre"
+                    placeholder="Tu nombre completo"
+                    required
+                    minlength="3"
+                    #nombre="ngModel"
+                    [class.is-invalid]="nombre.invalid && nombre.touched"
+                  >
+                  @if (nombre.invalid && nombre.touched) {
+                    <div class="invalid-feedback">
+                      @if (nombre.errors?.['required']) {
+                        <div>El nombre es requerido</div>
+                      }
+                      @if (nombre.errors?.['minlength']) {
+                        <div>Mínimo 3 caracteres</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Teléfono -->
+                <div class="col-md-6 mb-3">
+                  <label for="telefono" class="form-label text-warning fw-bold">📞 Teléfono</label>
+                  <input 
+                    type="tel" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="telefono"
+                    name="telefono"
+                    [(ngModel)]="registerData.telefono"
+                    placeholder="12345678"
+                    pattern="[0-9]{8}"
+                    #telefono="ngModel"
+                    [class.is-invalid]="telefono.invalid && telefono.touched"
+                  >
+                  @if (telefono.invalid && telefono.touched) {
+                    <div class="invalid-feedback">
+                      Ingresa un número de 8 dígitos
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="mb-3">
+                <label for="email" class="form-label text-warning fw-bold">📧 Correo Electrónico</label>
+                <input 
+                  type="email" 
+                  class="form-control bg-dark text-white border-warning" 
+                  id="email"
+                  name="email"
+                  [(ngModel)]="registerData.email"
+                  placeholder="tu@email.com"
+                  required
+                  #email="ngModel"
+                  [class.is-invalid]="email.invalid && email.touched"
+                >
+                @if (email.invalid && email.touched) {
+                  <div class="invalid-feedback">
+                    Por favor ingresa un correo válido
+                  </div>
+                }
+              </div>
+
+              <!-- Contraseña -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="password" class="form-label text-warning fw-bold">🔒 Contraseña</label>
+                  <input 
+                    type="password" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="password"
+                    name="password"
+                    [(ngModel)]="registerData.password"
+                    placeholder="••••••••"
+                    required
+                    minlength="6"
+                    #password="ngModel"
+                    [class.is-invalid]="password.invalid && password.touched"
+                  >
+                  @if (password.invalid && password.touched) {
+                    <div class="invalid-feedback">
+                      @if (password.errors?.['required']) {
+                        <div>La contraseña es requerida</div>
+                      }
+                      @if (password.errors?.['minlength']) {
+                        <div>Mínimo 6 caracteres</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div class="col-md-6 mb-3">
+                  <label for="confirmPassword" class="form-label text-warning fw-bold">🔒 Confirmar Contraseña</label>
+                  <input 
+                    type="password" 
+                    class="form-control bg-dark text-white border-warning" 
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    [(ngModel)]="confirmPassword"
+                    placeholder="••••••••"
+                    required
+                    #confirmPasswordInput="ngModel"
+                    [class.is-invalid]="(confirmPasswordInput.invalid && confirmPasswordInput.touched) || passwordMismatch"
+                    (input)="onInputChange()"
+                  >
+                  @if ((confirmPasswordInput.invalid && confirmPasswordInput.touched) || passwordMismatch) {
+                    <div class="invalid-feedback">
+                      @if (confirmPasswordInput.errors?.['required']) {
+                        <div>Confirma tu contraseña</div>
+                      }
+                      @if (passwordMismatch) {
+                        <div>Las contraseñas no coinciden</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Avatar Selection -->
+              <div class="mb-4">
+                <label class="form-label text-warning fw-bold">🎭 Elige tu Avatar</label>
+                <div class="avatar-selection">
+                  <div class="row g-2">
+                    @for (avatar of availableAvatars; track avatar.id; let i = $index) {
+                      <div class="col-3 col-sm-2">
+                        <div 
+                          class="avatar-option rounded-3 border cursor-pointer p-2 text-center"
+                          [class.border-warning]="registerData.avatarId === avatar.id"
+                          [class.border-secondary]="registerData.avatarId !== avatar.id"
+                          (click)="selectAvatar(avatar.id)"
+                        >
+                          <div class="avatar-emoji fs-4">{{ avatar.emoji }}</div>
+                          <small class="text-muted">{{ avatar.name }}</small>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Términos y condiciones -->
+              <div class="mb-4 form-check">
+                <input 
+                  type="checkbox" 
+                  class="form-check-input" 
+                  id="terminos"
+                  [(ngModel)]="registerData.aceptaTerminos"
+                  name="terminos"
+                  required
+                  #terminos="ngModel"
+                >
+                <label class="form-check-label opacity-90" for="terminos">
+                  Acepto los <a href="#" class="text-warning">Términos de Servicio</a> 
+                  y la <a href="#" class="text-warning">Política de Privacidad</a>
+                </label>
+                @if (terminos.invalid && terminos.touched) {
+                  <div class="text-danger small mt-1">
+                    Debes aceptar los términos y condiciones
+                  </div>
+                }
+              </div>
+
+              <!-- Botón de Registro -->
+              <button 
+                type="submit" 
+                class="btn btn-warning w-100 py-3 fw-bold mb-3"
+                [disabled]="registerForm.invalid || loading || passwordMismatch"
+              >
+                @if (!loading) {
+                  <span>🚀 Crear Cuenta</span>
+                }
+                @if (loading) {
+                  <span>
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Creando cuenta...
+                  </span>
+                }
+              </button>
+
+              <!-- Enlace a login -->
+              <div class="text-center">
+                <span class="opacity-90">¿Ya tienes cuenta? </span>
+                <a routerLink="/login" class="text-warning text-decoration-none fw-bold">
+                  Inicia Sesión
+                </a>
+              </div>
+            </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

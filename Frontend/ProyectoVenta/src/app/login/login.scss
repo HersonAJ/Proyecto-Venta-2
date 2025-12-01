@@ -1,0 +1,124 @@
+.login-section {
+  background: linear-gradient(135deg, #0f0f0f 0%, #2d2d2d 100%);
+  padding: 2rem 0;
+}
+
+.login-card {
+  backdrop-filter: blur(10px);
+  border: 2px solid #ffc107 !important;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.2) !important;
+    transform: translateY(-2px);
+  }
+}
+
+.form-control {
+  transition: all 0.3s ease;
+  
+  &:focus {
+    background-color: #1a1a1a !important;
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+    color: #fff !important;
+  }
+  
+  &::placeholder {
+    color: #6c757d !important;
+  }
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+  border: none;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-outline-warning {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #ffc107;
+    color: #212529;
+    transform: translateY(-1px);
+  }
+}
+
+.logo-placeholder {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Animación de error */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.is-invalid {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-section {
+    padding: 1rem;
+  }
+  
+  .login-card {
+    padding: 2rem 1.5rem !important;
+  }
+}
+
+.error-message-custom {
+  border: 1px solid #dc3545 !important;
+  background: rgba(220, 53, 69, 0.1) !important;
+  animation: fadeIn 0.3s ease-in-out;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #dc3545;
+    border-radius: 2px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shakeError {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.error-shake {
+  animation: shakeError 0.5s ease-in-out;
+}

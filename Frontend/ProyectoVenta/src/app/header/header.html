@@ -1,0 +1,265 @@
+<!-- Header con promoción completa -->
+<header class="header-main bg-dark text-white sticky-top">
+  <!-- Promoción completa -->
+  <section class="promo-header bg-dark text-white py-3">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <div class="d-flex align-items-center gap-3">
+            <!-- Emoji animado -->
+            <span class="promo-emoji-small">🎁</span>
+
+            <div class="promo-content-small">
+              <!-- Título con glow -->
+              <h5 class="promo-title-small fw-bold mb-1 text-warning">¡Promoción Especial!</h5>
+
+              <!-- Descripción -->
+              <p class="promo-description-small mb-0">
+                Por cada 7 hot dogs comprados, ¡te regalamos el octavo!
+              </p>
+
+              <!-- Contador animado -->
+              <div class="promo-counter-small mt-1">
+                <small>
+                  <span class="counter-highlight-small">
+                    @if (authService.isLoggedIn() && (perfilData$ | async); as perfil) {
+                    {{ perfil?.fidelidad?.totalPersonasAcumulando ?? 0 }}
+                    } @else { 154 }
+                  </span>
+                  personas acumulando puntos
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 text-md-end">
+          <!-- Usuario logueado con datos -->
+          @if (authService.isLoggedIn() && (perfilData$ | async); as perfil) {
+          <div class="d-flex align-items-center justify-content-md-end gap-3">
+            <!-- Progreso fidelidad -->
+            <div class="text-center progress-container-small">
+              <div class="h5 fw-bold mb-0 text-warning progress-number-small">
+                {{ perfil?.fidelidad?.promocionActual ?? 0 }}/{{
+                  perfil?.fidelidad?.metaPromocion ?? 7
+                }}
+              </div>
+              <div
+                class="progress mt-1"
+                style="height: 4px; width: 70px; background: rgba(255, 193, 7, 0.2)"
+              >
+                <div
+                  class="progress-bar progress-bar-animated"
+                  [style.width]="(perfil?.fidelidad?.porcentajeCompletado ?? 0) + '%'"
+                  style="background: #ffc107"
+                ></div>
+              </div>
+              <small class="opacity-90">Tu progreso</small>
+            </div>
+
+            <!-- Botón -->
+            <button class="btn promo-btn-small btn-sm fw-bold" routerLink="/perfil">
+              Ver Progreso
+            </button>
+          </div>
+          }
+          <!-- Usuario logueado pero datos cargando -->
+          @else if (authService.isLoggedIn() && loading) {
+          <div class="d-flex align-items-center justify-content-md-end gap-3">
+            <div class="spinner-border spinner-border-sm text-warning" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <small class="opacity-90">Cargando progreso...</small>
+          </div>
+          }
+          <!-- Usuario no logueado -->
+          @else {
+          <div class="d-flex align-items-center justify-content-md-end gap-3">
+            <div class="text-center progress-container-small">
+              <div class="h5 fw-bold mb-0 text-warning progress-number-small">3/7</div>
+              <div
+                class="progress mt-1"
+                style="height: 4px; width: 70px; background: rgba(255, 193, 7, 0.2)"
+              >
+                <div
+                  class="progress-bar progress-bar-animated"
+                  style="width: 42%; background: #ffc107"
+                ></div>
+              </div>
+              <small class="opacity-90">Ejemplo</small>
+            </div>
+
+            <button class="btn promo-btn-small btn-sm fw-bold" routerLink="/registro">
+              Unirse
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Confeti minimalista -->
+      <div class="confetti-small"></div>
+    </div>
+  </section>
+
+  <!-- Navegación principal -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-warning">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" routerLink="/">
+        <img src="assets/images/logos/logo1.png" alt="Logo" class="logo-nav" style="height: 50px" />
+        <span class="ms-2 fw-bold text-warning fs-4">Hot Dogs & Tortas</span>
+      </a>
+
+      <button
+        class="navbar-toggler border-warning"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- En la navegación principal, modificar: -->
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white fs-5" routerLink="/inicio" routerLinkActive="active"
+              >Inicio</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white fs-5" routerLink="/menu" routerLinkActive="active"
+              >Menú</a
+            >
+          </li>
+
+          <!-- Opciones para CLIENTES -->
+          @if (authService.isLoggedIn() && !authService.isTrabajador()) {
+          <li class="nav-item">
+            <a class="nav-link text-white fs-5" routerLink="/mis-pedidos" routerLinkActive="active">
+              Mis Pedidos
+            </a>
+          </li>
+          }
+
+          <!-- Opciones para TRABAJADORES y ADMIN -->
+          @if (authService.isLoggedIn() && authService.isTrabajador()) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/pedidos-pendientes"
+              routerLinkActive="active"
+            >
+            Pedidos Pendientes
+            </a>
+          </li>
+          }
+          
+          @if (authService.isLoggedIn() && authService.isTrabajador()) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/venta-manual"
+              routerLinkActive="active"
+            >
+            Venta Manual
+            </a>
+          </li>
+          }          
+
+          @if (authService.isLoggedIn() && authService.isTrabajador()) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/canjear-promo"
+              routerLinkActive="active"
+            >
+              Canjear Promocion
+            </a>
+          </li>
+          }
+
+          <!-- Opciones solo para ADMIN -->
+          @if (authService.isLoggedIn() && authService.isAdmin()) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/crear-producto"
+              routerLinkActive="active"
+            >
+              🍽️ Crear Producto
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/crear-trabajador"
+              routerLinkActive="active"
+            >
+              👥 Crear Trabajador
+            </a>
+          </li>
+          }
+        </ul>
+
+        <div class="navbar-nav align-items-center">
+          @if (authService.isLoggedIn()) {
+          <div class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle text-warning d-flex align-items-center fs-5"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+            >
+              <span class="me-2">👤</span>
+              Mi Cuenta
+            </a>
+            <!-- En el dropdown de Mi Cuenta, modificar: -->
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li><a class="dropdown-item" routerLink="/perfil">Mi Perfil</a></li>
+
+              <!-- Solo para admin y trabajadores -->
+              @if (authService.isTrabajador()) {
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" routerLink="/panel-control">🎛️ Panel de Control</a></li>
+              }
+
+              <!-- Solo para admin -->
+              @if (authService.isAdmin()) {
+              <li>
+                <a class="dropdown-item" routerLink="/crear-trabajador"
+                  >👥 Gestionar Trabajadores</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/crear-producto">🍽️ Gestionar Productos</a>
+              </li>
+              }
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item text-danger" (click)="logout()">Cerrar Sesión</a></li>
+            </ul>
+          </div>
+          <div class="nav-item">
+            <a class="nav-link text-white position-relative fs-5" routerLink="/carrito">
+              🛒 Carrito @if (carritoService.getCarritoActual().cantidadTotal > 0) {
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
+              >
+                {{ carritoService.getCarritoActual().cantidadTotal }}
+              </span>
+              }
+            </a>
+          </div>
+          } @else {
+          <div class="nav-item">
+            <a class="nav-link text-white fs-5" routerLink="/login">Iniciar Sesión</a>
+          </div>
+          <div class="nav-item">
+            <a class="btn btn-outline-warning btn-lg ms-3" routerLink="/registro">Registrarse</a>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
