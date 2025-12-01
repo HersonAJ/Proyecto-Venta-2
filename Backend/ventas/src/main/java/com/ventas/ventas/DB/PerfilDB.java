@@ -56,8 +56,8 @@ public class PerfilDB {
                 fidelidad.setPuntosAcumulados(rs.getInt("puntos_acumulados"));
                 fidelidad.setPromocionActual(rs.getInt("promocion_actual"));
                 fidelidad.setPromocionesPendientes(rs.getInt("promociones_pendientes"));
-                fidelidad.setMetaPromocion(7); // Meta fija de 7 hotdogs
-                fidelidad.setPorcentajeCompletado((fidelidad.getPromocionActual() * 100) / 7);
+                fidelidad.setMetaPromocion(5); // Meta fija de 5 hotdogs
+                fidelidad.setPorcentajeCompletado((fidelidad.getPromocionActual() * 100) / 5);
                 fidelidad.setTotalPersonasAcumulando(rs.getInt("total_personas_acumulando"));
 
                 response.setFidelidad(fidelidad);

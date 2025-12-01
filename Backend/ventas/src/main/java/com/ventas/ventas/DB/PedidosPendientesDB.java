@@ -70,27 +70,27 @@ public class PedidosPendientesDB {
 
     private List<Map<String, Object>> obtenerDetallesPedido(Connection conn, Integer pedidoId) throws SQLException {
         String sql = """
-            SELECT 
-                dp.id as detalle_id,
-                p.nombre as producto_nombre,
-                p.tipo as producto_tipo,
-                dp.cantidad,
-                dp.precio_unitario,
-                (dp.cantidad * dp.precio_unitario) as subtotal,
-                GROUP_CONCAT(
-                    CASE 
-                        WHEN pd.accion = 'quitar' THEN CONCAT('Sin ', i.nombre)
-                        ELSE i.nombre
-                    END SEPARATOR ', '
-                ) as personalizaciones
-            FROM detalles_pedido dp
-            JOIN productos p ON dp.producto_id = p.id
-            LEFT JOIN personalizaciones_detalle pd ON dp.id = pd.detalle_pedido_id
-            LEFT JOIN ingredientes i ON pd.ingrediente_id = i.id
-            WHERE dp.pedido_id = ?
-            GROUP BY dp.id, p.nombre, p.tipo, dp.cantidad, dp.precio_unitario
-            ORDER BY p.tipo, p.nombre
-            """;
+        SELECT 
+            dp.id as detalle_id,
+            p.nombre as producto_nombre,
+            p.tipo as producto_tipo,
+            dp.cantidad,
+            dp.precio_unitario,
+            (dp.cantidad * dp.precio_unitario) as subtotal,
+            STRING_AGG(
+                CASE 
+                    WHEN pd.accion = 'quitar' THEN CONCAT('Sin ', i.nombre)
+                    ELSE i.nombre
+                END, ', '
+            ) as personalizaciones
+        FROM detalles_pedido dp
+        JOIN productos p ON dp.producto_id = p.id
+        LEFT JOIN personalizaciones_detalle pd ON dp.id = pd.detalle_pedido_id
+        LEFT JOIN ingredientes i ON pd.ingrediente_id = i.id
+        WHERE dp.pedido_id = ?
+        GROUP BY dp.id, p.nombre, p.tipo, dp.cantidad, dp.precio_unitario
+        ORDER BY p.tipo, p.nombre
+        """;
 
         List<Map<String, Object>> detalles = new ArrayList<>();
 

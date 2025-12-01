@@ -192,8 +192,8 @@ public class PedidosEntregadosDB {
 
         // Calcular nuevas promociones ganadas en ESTE pedido
         int totalAcumulado = promocionActual + totalPuntos;
-        int nuevasPromociones = totalAcumulado / 7;
-        int nuevoPromocionActual = totalAcumulado % 7;
+        int nuevasPromociones = totalAcumulado / 5;
+        int nuevoPromocionActual = totalAcumulado % 5;
         int totalPromocionesPendientes = promocionesPendientes + nuevasPromociones;
 
         // Insertar o actualizar
@@ -226,7 +226,7 @@ public class PedidosEntregadosDB {
         fidelidad.put("promocionActual", nuevoPromocionActual);
         fidelidad.put("promocionesPendientes", totalPromocionesPendientes);
         fidelidad.put("nuevasPromocionesGanadas", nuevasPromociones);
-        fidelidad.put("metaPromocion", 7);
+        fidelidad.put("metaPromocion", 5);
         fidelidad.put("cheveresEnEstePedido", cheveresEnPedido);
 
         return fidelidad;
@@ -238,7 +238,7 @@ public class PedidosEntregadosDB {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             for (int i = 0; i < nuevasPromociones; i++) {
                 stmt.setInt(1, usuarioId);
-                stmt.setString(2, "Promoción ganada por acumulación de 7 Cheveres");
+                stmt.setString(2, "Promoción ganada por acumulación de 5 Cheveres");
                 stmt.addBatch();
             }
             stmt.executeBatch();
