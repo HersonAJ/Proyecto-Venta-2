@@ -7,7 +7,7 @@ import { AuthService } from '../servicios/auth-service';
 
 interface AvatarOption {
   id: number;
-  emoji: string;
+  imageUrl: string;  // Cambiado de 'emoji' a 'imageUrl'
   name: string;
 }
 
@@ -24,7 +24,7 @@ export class RegistroComponent {
     email: '',
     password: '',
     telefono: '',
-    avatarId: 1,
+    avatarId: 1,  // ID por defecto
     aceptaTerminos: false
   };
 
@@ -34,13 +34,12 @@ export class RegistroComponent {
   registroExitoso: boolean = false;
   mensajeExito: string = '';
 
+  // AVATARES ACTUALIZADOS CON IMÁGENES
   availableAvatars: AvatarOption[] = [
-    { id: 1, emoji: '👤', name: 'Usuario' },
-    { id: 2, emoji: '👨‍🍳', name: 'Chef' },
-    { id: 3, emoji: '👨‍💼', name: 'Ejecutivo' },
-    { id: 4, emoji: '🧑‍🎓', name: 'Estudiante' },
-    { id: 5, emoji: '👨‍🔧', name: 'Técnico' },
-    { id: 6, emoji: '🦸', name: 'Héroe' }
+    { id: 1, imageUrl: 'assets/images/avatar/1.jpg', name: 'Avatar 1' },
+    { id: 2, imageUrl: 'assets/images/avatar/2.jpg', name: 'Avatar 2' },
+    { id: 3, imageUrl: 'assets/images/avatar/3.jpg', name: 'Avatar 3' },
+    { id: 4, imageUrl: 'assets/images/avatar/4.jpg', name: 'Avatar 4' }
   ];
 
   constructor(

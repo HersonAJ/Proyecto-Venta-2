@@ -15,18 +15,21 @@
 
               <!-- Descripción -->
               <p class="promo-description-small mb-0">
-                Por cada 7 hot dogs comprados, ¡te regalamos el octavo!
+                Por cada 5 cheveres comprados, ¡te regalamos el 6!
               </p>
 
-              <!-- Contador animado -->
+              <!-- Contador animado MODIFICADO -->
               <div class="promo-counter-small mt-1">
                 <small>
-                  <span class="counter-highlight-small">
-                    @if (authService.isLoggedIn() && (perfilData$ | async); as perfil) {
-                    {{ perfil?.fidelidad?.totalPersonasAcumulando ?? 0 }}
-                    } @else { 154 }
-                  </span>
-                  personas acumulando puntos
+                  @if (authService.isLoggedIn()) {
+                    <span class="counter-highlight-small">
+                      🎯 ¡Sigue acumulando para tu recompensa!
+                    </span>
+                  } @else {
+                    <span class="counter-highlight-small">
+                      🚀 ¡Sé el próximo en ganar tu chevere gratis!
+                    </span>
+                  }
                 </small>
               </div>
             </div>
@@ -40,9 +43,7 @@
             <!-- Progreso fidelidad -->
             <div class="text-center progress-container-small">
               <div class="h5 fw-bold mb-0 text-warning progress-number-small">
-                {{ perfil?.fidelidad?.promocionActual ?? 0 }}/{{
-                  perfil?.fidelidad?.metaPromocion ?? 7
-                }}
+                {{ perfil?.fidelidad?.promocionActual ?? 0 }}/5
               </div>
               <div
                 class="progress mt-1"
@@ -72,18 +73,18 @@
             <small class="opacity-90">Cargando progreso...</small>
           </div>
           }
-          <!-- Usuario no logueado -->
+          <!-- Usuario no logueado MODIFICADO (3/7 → 3/5) -->
           @else {
           <div class="d-flex align-items-center justify-content-md-end gap-3">
             <div class="text-center progress-container-small">
-              <div class="h5 fw-bold mb-0 text-warning progress-number-small">3/7</div>
+              <div class="h5 fw-bold mb-0 text-warning progress-number-small">3/5</div>
               <div
                 class="progress mt-1"
                 style="height: 4px; width: 70px; background: rgba(255, 193, 7, 0.2)"
               >
                 <div
                   class="progress-bar progress-bar-animated"
-                  style="width: 42%; background: #ffc107"
+                  style="width: 60%; background: #ffc107"
                 ></div>
               </div>
               <small class="opacity-90">Ejemplo</small>
@@ -107,7 +108,7 @@
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" routerLink="/">
         <img src="assets/images/logos/logo1.png" alt="Logo" class="logo-nav" style="height: 50px" />
-        <span class="ms-2 fw-bold text-warning fs-4">Hot Dogs & Tortas</span>
+        <span class="ms-2 fw-bold text-warning fs-4">Cheveres & Tortas</span>
       </a>
 
       <button
@@ -134,7 +135,7 @@
           </li>
 
           <!-- Opciones para CLIENTES -->
-          @if (authService.isLoggedIn() && !authService.isTrabajador()) {
+          @if (authService.isLoggedIn() && !authService.isStaff()) {
           <li class="nav-item">
             <a class="nav-link text-white fs-5" routerLink="/mis-pedidos" routerLinkActive="active">
               Mis Pedidos
@@ -142,8 +143,8 @@
           </li>
           }
 
-          <!-- Opciones para TRABAJADORES y ADMIN -->
-          @if (authService.isLoggedIn() && authService.isTrabajador()) {
+          <!-- Opciones para TRABAJADORES y ADMIN - USANDO isStaff() -->
+          @if (authService.isLoggedIn() && authService.isStaff()) {
           <li class="nav-item">
             <a
               class="nav-link text-white fs-5"
@@ -153,9 +154,7 @@
             Pedidos Pendientes
             </a>
           </li>
-          }
           
-          @if (authService.isLoggedIn() && authService.isTrabajador()) {
           <li class="nav-item">
             <a
               class="nav-link text-white fs-5"
@@ -165,16 +164,14 @@
             Venta Manual
             </a>
           </li>
-          }          
 
-          @if (authService.isLoggedIn() && authService.isTrabajador()) {
           <li class="nav-item">
             <a
               class="nav-link text-white fs-5"
               routerLink="/canjear-promo"
               routerLinkActive="active"
             >
-              Canjear Promocion
+              Canjear Promoción
             </a>
           </li>
           }
@@ -214,12 +211,12 @@
               <span class="me-2">👤</span>
               Mi Cuenta
             </a>
-            <!-- En el dropdown de Mi Cuenta, modificar: -->
+            <!-- En el dropdown de Mi Cuenta, usando isStaff() -->
             <ul class="dropdown-menu dropdown-menu-dark">
               <li><a class="dropdown-item" routerLink="/perfil">Mi Perfil</a></li>
 
               <!-- Solo para admin y trabajadores -->
-              @if (authService.isTrabajador()) {
+              @if (authService.isStaff()) {
               <li><hr class="dropdown-divider" /></li>
               <li><a class="dropdown-item" routerLink="/panel-control">🎛️ Panel de Control</a></li>
               }
@@ -232,7 +229,8 @@
                 >
               </li>
               <li>
-                <a class="dropdown-item" routerLink="/crear-producto">🍽️ Gestionar Productos</a>
+                <a class="dropdown-item" routerLink="/crear-producto">🍽️ Gestionar Productos</a
+                >
               </li>
               }
               <li><hr class="dropdown-divider" /></li>

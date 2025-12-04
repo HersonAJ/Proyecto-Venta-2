@@ -15,33 +15,73 @@
       </div>
     </div>
 
-    <!-- TEXTO LARGO SIN TARJETAS — SOLO TIPOGRAFÍA -->
-    <div class="scroll-up delay-1">
-      <h3 class="fw-bold text-warning mb-3">Recompensas por Compras</h3>
-      <p class="opacity-90 mb-4">
-        Para brindarte una experiencia especial, contamos con un sistema de acumulación que premia
-        tus compras frecuentes. Cada compra de un **chévere** suma un progreso en tu cuenta digital
-        registrada.
-      </p>
+    <!-- CONTENIDO EN 2 COLUMNAS -->
+    <div class="row g-4">
+      <!-- COLUMNA 1: TÉRMINOS Y CONDICIONES -->
+      <div class="col-lg-8">
+        <div class="scroll-up delay-1">
+          <h3 class="fw-bold text-warning mb-3">Recompensas por Compras</h3>
+          <p class="opacity-90 mb-4">
+            Para brindarte una experiencia especial, contamos con un sistema de acumulación que premia
+            tus compras frecuentes. Cada compra de un **chévere** suma un progreso en tu cuenta digital
+            registrada.
+          </p>
+        </div>
+
+        <div class="scroll-up delay-2">
+          <h4 class="fw-bold text-warning mb-3">Reglas del Sistema</h4>
+
+          <ul class="list-unstyled rules-list">
+            <li>✔ Aplica únicamente para <strong>chéveres</strong>.</li>
+            <li>✔ Cada compra suma 1 punto de progreso.</li>
+            <li>
+              ✔ Al llegar a <strong>5 compras</strong>, obtienes el
+              <strong>6° completamente gratis</strong>.
+            </li>
+            <li>✔ Tu progreso se guarda automáticamente.</li>
+            <li>✔ El premio debe reclamarse en el punto de venta.</li>
+            <li>✔ No tiene valor monetario.</li>
+            <li>✔ Las reglas pueden cambiar según disponibilidad.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- COLUMNA 2: UBICACIÓN -->
+      <div class="col-lg-4">
+        <div class="scroll-up delay-3 h-100">
+          <div class="card bg-dark border-warning border-2 overflow-hidden h-100">
+            <div class="card-body p-0 h-100 d-flex flex-column">
+              <a 
+                href="https://www.google.com/maps/dir/?api=1&destination=14.917337,-91.438085" 
+                target="_blank" 
+                class="text-decoration-none flex-grow-1"
+              >
+                <!-- Contenedor para la imagen manteniendo proporciones -->
+                <div class="w-100 h-100 position-relative">
+                  <img 
+                    src="assets/images/logos/mapa.png" 
+                    alt="Ubicación Cheveres & Tortas"
+                    class="w-100 h-100 object-fit-cover"
+                  >
+                  <!-- Overlay con información -->
+                  <div class="position-absolute bottom-0 start-0 end-0 p-3 bg-dark bg-opacity-75">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div>
+                        <h6 class="text-white mb-0">📍 Cheveres & Tortas</h6>
+                        <small class="text-warning">Toca para abrir en Google Maps</small>
+                      </div>
+                      <i class="bi bi-arrow-up-right text-warning fs-4"></i>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="scroll-up delay-2">
-      <h4 class="fw-bold text-warning mb-3">Reglas del Sistema</h4>
-
-      <ul class="list-unstyled rules-list">
-        <li>✔ Aplica únicamente para <strong>chéveres</strong>.</li>
-        <li>✔ Cada compra suma 1 punto de progreso.</li>
-        <li>
-          ✔ Al llegar a <strong>5 compras</strong>, obtienes el
-          <strong>6° completamente gratis</strong>.
-        </li>
-        <li>✔ Tu progreso se guarda automáticamente.</li>
-        <li>✔ El premio debe reclamarse en el punto de venta.</li>
-        <li>✔ No tiene valor monetario.</li>
-        <li>✔ Las reglas pueden cambiar según disponibilidad.</li>
-      </ul>
-    </div>
-
+    <!-- BOTÓN FINAL -->
     <div class="scroll-up text-center mt-5">
       <button class="btn btn-warning btn-lg px-4 py-3 fw-bold shadow-lg" routerLink="/menu">
         Ir al Menú 🍽️

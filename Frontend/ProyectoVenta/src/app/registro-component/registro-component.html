@@ -185,28 +185,40 @@
                 </div>
               </div>
 
-              <!-- Avatar Selection -->
-              <div class="mb-4">
-                <label class="form-label text-warning fw-bold">🎭 Elige tu Avatar</label>
-                <div class="avatar-selection">
-                  <div class="row g-2">
-                    @for (avatar of availableAvatars; track avatar.id; let i = $index) {
-                      <div class="col-3 col-sm-2">
-                        <div 
-                          class="avatar-option rounded-3 border cursor-pointer p-2 text-center"
-                          [class.border-warning]="registerData.avatarId === avatar.id"
-                          [class.border-secondary]="registerData.avatarId !== avatar.id"
-                          (click)="selectAvatar(avatar.id)"
-                        >
-                          <div class="avatar-emoji fs-4">{{ avatar.emoji }}</div>
-                          <small class="text-muted">{{ avatar.name }}</small>
-                        </div>
-                      </div>
-                    }
-                  </div>
-                </div>
-              </div>
-
+<!-- Avatar Selection - SIN NOMBRES -->
+<div class="mb-4">
+  <label class="form-label text-warning fw-bold">🎭 Elige tu Avatar</label>
+  <div class="avatar-selection">
+    <div class="row g-3 justify-content-center"> <!-- Aumentado el gap a g-3 -->
+      @for (avatar of availableAvatars; track avatar.id; let i = $index) {
+        <div class="col-3 col-sm-2">
+          <div 
+            class="avatar-option rounded-3 border cursor-pointer p-1 text-center"
+            [class.border-warning]="registerData.avatarId === avatar.id"
+            [class.border-secondary]="registerData.avatarId !== avatar.id"
+            (click)="selectAvatar(avatar.id)"
+          >
+            <!-- Solo imagen, sin nombre -->
+            <img 
+              [src]="avatar.imageUrl" 
+              [alt]="'Avatar ' + avatar.id"
+              class="avatar-image rounded-circle"
+              style="width: 70px; height: 70px; object-fit: cover;" 
+            >
+          </div>
+        </div>
+      }
+    </div>
+    
+    <!-- Indicador de selección (opcional) -->
+    <div class="text-center mt-3">
+      <small class="text-muted">
+        Avatar seleccionado: 
+        <span class="text-warning fw-bold">#{{ registerData.avatarId }}</span>
+      </small>
+    </div>
+  </div>
+</div>
               <!-- Términos y condiciones -->
               <div class="mb-4 form-check">
                 <input 

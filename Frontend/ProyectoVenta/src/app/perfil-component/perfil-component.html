@@ -91,7 +91,12 @@
                             [class.border-secondary]="perfilData.avatarId !== avatar.id"
                             (click)="seleccionarAvatar(avatar.id)"
                           >
-                            <div class="avatar-emoji fs-4">{{ avatar.emoji }}</div>
+  <img 
+    [src]="'assets/images/avatar/' + avatar.id + '.jpg'"
+    [alt]="'Avatar ' + avatar.name"
+    class="avatar-image rounded-circle"
+    style="width: 60px; height: 60px; object-fit: cover;"
+  >
                             <small class="text-muted">{{ avatar.name }}</small>
                           </div>
                         </div>
@@ -124,7 +129,7 @@
                   <div class="stats-grid mb-3">
 
                     <div class="stat-item text-center p-2 bg-dark bg-opacity-50 rounded">
-                      <div class="stat-number text-warning fw-bold fs-5">{{ perfilData.fidelidad.promocionActual }}/7</div>
+                      <div class="stat-number text-warning fw-bold fs-5">{{ perfilData.fidelidad.promocionActual }}/5</div>
                       <small class="opacity-90">Progreso Actual</small>
                     </div>
                     <div class="stat-item text-center p-2 bg-dark bg-opacity-50 rounded">
@@ -155,7 +160,7 @@
                         <h5 class="text-warning fw-bold mb-2">¡Promoción Disponible!</h5>
                         <p class="text-light mb-2">
                           Tienes <strong class="text-warning">{{ perfilData.fidelidad.promocionesPendientes }}</strong> 
-                          hot dog(s) gratis listo(s) para reclamar
+                          chevere(s) gratis listo(s) para reclamar
                         </p>
                         <small class="opacity-90">
                           Acércate al local y muestra este perfil al trabajador
@@ -166,8 +171,8 @@
                         <div class="promo-icon mb-2">⏳</div>
                         <h5 class="text-light fw-bold mb-2">Sigue acumulando</h5>
                         <p class="text-light mb-2">
-                          Necesitas <strong class="text-warning">{{ 7 - perfilData.fidelidad.promocionActual }}</strong> 
-                          hot dog(s) más para tu próxima promoción
+                          Necesitas <strong class="text-warning">{{ 5 - perfilData.fidelidad.promocionActual }}</strong> 
+                          chevere(s) más para tu próxima promoción
                         </p>
                         <small class="opacity-90">
                           ¡Cada compra te acerca a tu recompensa!
