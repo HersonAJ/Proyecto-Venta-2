@@ -185,37 +185,48 @@
                 </div>
               </div>
 
-<!-- Avatar Selection - SIN NOMBRES -->
+<!-- Avatar Selection - FLEXBOX RESPONSIVE -->
 <div class="mb-4">
-  <label class="form-label text-warning fw-bold">🎭 Elige tu Avatar</label>
+  <label class="form-label text-warning fw-bold mb-3">🎭 Elige tu Avatar</label>
   <div class="avatar-selection">
-    <div class="row g-3 justify-content-center"> <!-- Aumentado el gap a g-3 -->
-      @for (avatar of availableAvatars; track avatar.id; let i = $index) {
-        <div class="col-3 col-sm-2">
-          <div 
-            class="avatar-option rounded-3 border cursor-pointer p-1 text-center"
-            [class.border-warning]="registerData.avatarId === avatar.id"
-            [class.border-secondary]="registerData.avatarId !== avatar.id"
-            (click)="selectAvatar(avatar.id)"
+    <!-- Flexbox con wrap para mejor responsividad -->
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+      @for (avatar of availableAvatars; track avatar.id) {
+        <div 
+          class="avatar-option position-relative rounded-circle cursor-pointer"
+          [class.avatar-selected]="registerData.avatarId === avatar.id"
+          (click)="selectAvatar(avatar.id)"
+          style="
+            width: 75px; 
+            height: 75px;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+          "
+          [style.border-color]="registerData.avatarId === avatar.id ? '#ffc107' : '#6c757d'"
+          [style.transform]="registerData.avatarId === avatar.id ? 'scale(1.1)' : 'scale(1)'"
+        >
+          <img 
+            [src]="avatar.imageUrl" 
+            [alt]="'Avatar ' + avatar.id"
+            class="rounded-circle w-100 h-100"
+            style="object-fit: cover;"
           >
-            <!-- Solo imagen, sin nombre -->
-            <img 
-              [src]="avatar.imageUrl" 
-              [alt]="'Avatar ' + avatar.id"
-              class="avatar-image rounded-circle"
-              style="width: 70px; height: 70px; object-fit: cover;" 
-            >
-          </div>
+          <!-- Indicador visual de selección -->
+          @if (registerData.avatarId === avatar.id) {
+            <div class="position-absolute top-0 end-0 bg-warning rounded-circle" 
+                 style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+              <span class="text-dark fw-bold" style="font-size: 12px;">✓</span>
+            </div>
+          }
         </div>
       }
     </div>
     
-    <!-- Indicador de selección (opcional) -->
+    <!-- Indicador de selección -->
     <div class="text-center mt-3">
-      <small class="text-muted">
-        Avatar seleccionado: 
-        <span class="text-warning fw-bold">#{{ registerData.avatarId }}</span>
-      </small>
+      <div class="badge bg-warning bg-opacity-25 text-warning px-3 py-2 border border-warning">
+        <span class="fw-bold">Avatar #{{ registerData.avatarId }}</span>
+      </div>
     </div>
   </div>
 </div>

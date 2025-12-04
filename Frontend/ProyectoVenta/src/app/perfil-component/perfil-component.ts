@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PerfilService, PerfilCompleto, FidelidadData } from '../servicios/perfil-service';
+import { PerfilService, PerfilCompleto } from '../servicios/perfil-service';
 import { AuthService } from '../servicios/auth-service';
 
 interface AvatarOption {
   id: number;
-  emoji: string;
+  imageUrl: string; 
   name: string;
 }
 
@@ -26,12 +26,10 @@ export class PerfilComponent implements OnInit {
   errorMessage: string = '';
 
   availableAvatars: AvatarOption[] = [
-    { id: 1, emoji: '👤', name: 'Usuario' },
-    { id: 2, emoji: '👨‍🍳', name: 'Chef' },
-    { id: 3, emoji: '👨‍💼', name: 'Ejecutivo' },
-    { id: 4, emoji: '🧑‍🎓', name: 'Estudiante' },
-    { id: 5, emoji: '👨‍🔧', name: 'Técnico' },
-    { id: 6, emoji: '🦸', name: 'Héroe' }
+    { id: 1, imageUrl: 'assets/images/avatar/1.jpg', name: 'Avatar 1' },
+    { id: 2, imageUrl: 'assets/images/avatar/2.jpg', name: 'Avatar 2' },
+    { id: 3, imageUrl: 'assets/images/avatar/3.jpg', name: 'Avatar 3' },
+    { id: 4, imageUrl: 'assets/images/avatar/4.jpg', name: 'Avatar 4' }
   ];
 
   constructor(
@@ -81,11 +79,12 @@ export class PerfilComponent implements OnInit {
       next: (response) => {
         this.saving = false;
         this.mensajeExito = 'Avatar actualizado correctamente';
+        this.cargarPerfil();
       },
       error: (error) => {
         console.error('Error actualizando avatar:', error);
         this.saving = false;
-        this.errorMessage = error.error || 'Error al actualizar avatar';
+        this.errorMessage = error.error?.message || 'Error al actualizar avatar';
       }
     });
   }
