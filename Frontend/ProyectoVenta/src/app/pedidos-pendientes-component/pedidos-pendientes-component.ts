@@ -27,7 +27,7 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (!this.authService.isTrabajador()) {
+    if (!this.authService.isStaff) {
       this.router.navigate(['/inicio']);
       return;
     }

@@ -33,7 +33,7 @@ export class CanjearPromoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (!this.authService.isTrabajador()) {
+    if (!this.authService.isStaff) {
       this.router.navigate(['/inicio']);
       return;
     }
