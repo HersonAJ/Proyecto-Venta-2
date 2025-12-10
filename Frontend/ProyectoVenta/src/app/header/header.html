@@ -1,34 +1,43 @@
 <!-- Header con promoción completa -->
 <header class="header-main bg-dark text-white sticky-top">
   <!-- Promoción completa -->
-  <section class="promo-header bg-dark text-white py-3">
+  <section class="promo-header bg-dark text-white py-2 py-md-3">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-8">
-          <div class="d-flex align-items-center gap-3">
-            <!-- Emoji animado -->
-            <span class="promo-emoji-small">🎁</span>
+        <div class="col-6 col-md-8">
+          <div class="d-flex align-items-center gap-2 gap-md-3">
+            <span class="promo-emoji-small">
+              <span class="d-none d-md-inline">🎁</span>
+              <span class="d-inline d-md-none">🎯</span>
+            </span>
 
             <div class="promo-content-small">
-              <!-- Título con glow -->
-              <h5 class="promo-title-small fw-bold mb-1 text-warning">¡Promoción Especial!</h5>
+              <h5 class="promo-title-small fw-bold mb-1 text-warning">
+                <span class="d-none d-md-inline">¡Promoción Especial!</span>
+                <span class="d-inline d-md-none">¡Promo Especial!</span>
+              </h5>
 
-              <!-- Descripción -->
               <p class="promo-description-small mb-0">
-                Por cada 5 cheveres comprados, ¡te regalamos el 6!
+                <span class="d-none d-md-inline">
+                  Por cada 5 cheveres comprados, ¡te regalamos el 6!
+                </span>
+                <span class="d-inline d-md-none"> 5 cheveres y el 6 gratis! </span>
               </p>
 
-              <!-- Contador animado MODIFICADO -->
               <div class="promo-counter-small mt-1">
                 <small>
                   @if (authService.isLoggedIn()) {
-                    <span class="counter-highlight-small">
-                      🎯 ¡Sigue acumulando para tu recompensa!
-                    </span>
+                  <span class="counter-highlight-small d-none d-md-inline">
+                    🎯 ¡Sigue acumulando para tu recompensa!
+                  </span>
+                  <span class="counter-highlight-small d-inline d-md-none"> 🎯 Acumula! </span>
                   } @else {
-                    <span class="counter-highlight-small">
-                      🚀 ¡Sé el próximo en ganar tu chevere gratis!
-                    </span>
+                  <span class="counter-highlight-small d-none d-md-inline">
+                    🚀 ¡Sé el próximo en ganar tu chevere gratis!
+                  </span>
+                  <span class="counter-highlight-small d-inline d-md-none">
+                    🚀 ¡Gana cheveres!
+                  </span>
                   }
                 </small>
               </div>
@@ -36,18 +45,16 @@
           </div>
         </div>
 
-        <div class="col-md-4 text-md-end">
-          <!-- Usuario logueado con datos -->
+        <div class="col-6 col-md-4">
           @if (authService.isLoggedIn() && (perfilData$ | async); as perfil) {
-          <div class="d-flex align-items-center justify-content-md-end gap-3">
-            <!-- Progreso fidelidad -->
+          <div class="d-flex align-items-center justify-content-end gap-2 gap-md-3">
             <div class="text-center progress-container-small">
               <div class="h5 fw-bold mb-0 text-warning progress-number-small">
                 {{ perfil?.fidelidad?.promocionActual ?? 0 }}/5
               </div>
               <div
-                class="progress mt-1"
-                style="height: 4px; width: 70px; background: rgba(255, 193, 7, 0.2)"
+                class="progress mt-1 mx-auto"
+                style="height: 4px; width: 60px; background: rgba(255, 193, 7, 0.2)"
               >
                 <div
                   class="progress-bar progress-bar-animated"
@@ -55,42 +62,51 @@
                   style="background: #ffc107"
                 ></div>
               </div>
-              <small class="opacity-90">Tu progreso</small>
+              <small class="opacity-90 d-none d-sm-inline">Tu progreso</small>
+              <small class="opacity-90 d-inline d-sm-none">Progreso</small>
             </div>
 
-            <!-- Botón -->
-            <button class="btn promo-btn-small btn-sm fw-bold" routerLink="/perfil">
-              Ver Progreso
+            <button
+              class="btn promo-btn-small btn-sm fw-bold d-none d-md-inline"
+              routerLink="/perfil"
+              (click)="closeNavbarOnClick($event)"
+            >
+              Ver
             </button>
           </div>
           }
           <!-- Usuario logueado pero datos cargando -->
           @else if (authService.isLoggedIn() && loading) {
-          <div class="d-flex align-items-center justify-content-md-end gap-3">
+          <div class="d-flex align-items-center justify-content-end gap-3">
             <div class="spinner-border spinner-border-sm text-warning" role="status">
               <span class="visually-hidden">Cargando...</span>
             </div>
-            <small class="opacity-90">Cargando progreso...</small>
+            <small class="opacity-90 d-none d-md-inline">Cargando...</small>
           </div>
           }
-          <!-- Usuario no logueado MODIFICADO (3/7 → 3/5) -->
+
           @else {
-          <div class="d-flex align-items-center justify-content-md-end gap-3">
+          <div class="d-flex align-items-center justify-content-end gap-2 gap-md-3">
             <div class="text-center progress-container-small">
               <div class="h5 fw-bold mb-0 text-warning progress-number-small">3/5</div>
               <div
-                class="progress mt-1"
-                style="height: 4px; width: 70px; background: rgba(255, 193, 7, 0.2)"
+                class="progress mt-1 mx-auto"
+                style="height: 4px; width: 60px; background: rgba(255, 193, 7, 0.2)"
               >
                 <div
                   class="progress-bar progress-bar-animated"
                   style="width: 60%; background: #ffc107"
                 ></div>
               </div>
-              <small class="opacity-90">Ejemplo</small>
+              <small class="opacity-90 d-none d-sm-inline">Ejemplo</small>
+              <small class="opacity-90 d-inline d-sm-none">Demo</small>
             </div>
 
-            <button class="btn promo-btn-small btn-sm fw-bold" routerLink="/registro">
+            <button
+              class="btn promo-btn-small btn-sm fw-bold d-none d-md-inline"
+              routerLink="/registro"
+              (click)="closeNavbarOnClick($event)"
+            >
               Unirse
             </button>
           </div>
@@ -98,7 +114,6 @@
         </div>
       </div>
 
-      <!-- Confeti minimalista -->
       <div class="confetti-small"></div>
     </div>
   </section>
@@ -106,9 +121,13 @@
   <!-- Navegación principal -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-warning">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" routerLink="/">
+      <a
+        class="navbar-brand d-flex align-items-center"
+        routerLink="/"
+        (click)="closeNavbarOnClick()"
+      >
         <img src="assets/images/logos/logo1.png" alt="Logo" class="logo-nav" style="height: 50px" />
-        <span class="ms-2 fw-bold text-warning fs-4">Cheveres & Tortas</span>
+        <span class="ms-2 fw-bold text-warning fs-2.5">Tacos, Cheveres & Tortas</span>
       </a>
 
       <button
@@ -116,52 +135,72 @@
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <!-- En la navegación principal, modificar: -->
+
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link text-white fs-5" routerLink="/inicio" routerLinkActive="active"
-              >Inicio</a
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/inicio"
+              routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
             >
+              Inicio
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white fs-5" routerLink="/menu" routerLinkActive="active"
-              >Menú</a
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/menu"
+              routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
             >
+              Menú
+            </a>
           </li>
 
           <!-- Opciones para CLIENTES -->
           @if (authService.isLoggedIn() && !authService.isStaff()) {
           <li class="nav-item">
-            <a class="nav-link text-white fs-5" routerLink="/mis-pedidos" routerLinkActive="active">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/mis-pedidos"
+              routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
+            >
               Mis Pedidos
             </a>
           </li>
           }
 
-          <!-- Opciones para TRABAJADORES y ADMIN - USANDO isStaff() -->
+          <!-- Opciones para TRABAJADORES y ADMIN -->
           @if (authService.isLoggedIn() && authService.isStaff()) {
           <li class="nav-item">
             <a
               class="nav-link text-white fs-5"
               routerLink="/pedidos-pendientes"
               routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
             >
-            Pedidos Pendientes
+              Pedidos Pendientes
             </a>
           </li>
-          
+
           <li class="nav-item">
             <a
               class="nav-link text-white fs-5"
               routerLink="/venta-manual"
               routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
             >
-            Venta Manual
+              Venta Manual
             </a>
           </li>
 
@@ -170,6 +209,7 @@
               class="nav-link text-white fs-5"
               routerLink="/canjear-promo"
               routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
             >
               Canjear Promoción
             </a>
@@ -183,6 +223,7 @@
               class="nav-link text-white fs-5"
               routerLink="/crear-producto"
               routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
             >
               🍽️ Crear Producto
             </a>
@@ -192,6 +233,7 @@
               class="nav-link text-white fs-5"
               routerLink="/crear-trabajador"
               routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
             >
               👥 Crear Trabajador
             </a>
@@ -201,44 +243,70 @@
 
         <div class="navbar-nav align-items-center">
           @if (authService.isLoggedIn()) {
-          <div class="nav-item dropdown">
+          <div class="nav-item dropdown" #miCuentaDropdown (click)="$event.stopPropagation()">
             <a
               class="nav-link dropdown-toggle text-warning d-flex align-items-center fs-5"
               href="#"
               role="button"
               data-bs-toggle="dropdown"
+              aria-expanded="false"
+              (click)="toggleDropdown($event)"
             >
               <span class="me-2">👤</span>
               Mi Cuenta
             </a>
-            <!-- En el dropdown de Mi Cuenta, usando isStaff() -->
-            <ul class="dropdown-menu dropdown-menu-dark">
-              <li><a class="dropdown-item" routerLink="/perfil">Mi Perfil</a></li>
+            <!-- En el dropdown de Mi Cuenta -->
+            <ul
+              class="dropdown-menu dropdown-menu-dark dropdown-menu-end"
+              (click)="closeNavbarOnClick($event)"
+            >
+              <li>
+                <a class="dropdown-item" routerLink="/perfil"> Mi Perfil </a>
+              </li>
 
               <!-- Solo para admin y trabajadores -->
               @if (authService.isStaff()) {
               <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item" routerLink="/panel-control">🎛️ Panel de Control</a></li>
+              <li>
+                <a class="dropdown-item" routerLink="/panel-control" (click)="closeNavbarOnClick()">
+                  🎛️ Panel de Control
+                </a>
+              </li>
               }
 
               <!-- Solo para admin -->
               @if (authService.isAdmin()) {
               <li>
-                <a class="dropdown-item" routerLink="/crear-trabajador"
-                  >👥 Gestionar Trabajadores</a
+                <a
+                  class="dropdown-item"
+                  routerLink="/crear-trabajador"
+                  (click)="closeNavbarOnClick()"
                 >
+                  👥 Gestionar Trabajadores
+                </a>
               </li>
               <li>
-                <a class="dropdown-item" routerLink="/crear-producto">🍽️ Gestionar Productos</a
+                <a
+                  class="dropdown-item"
+                  routerLink="/crear-producto"
+                  (click)="closeNavbarOnClick()"
                 >
+                  🍽️ Gestionar Productos
+                </a>
               </li>
               }
               <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item text-danger" (click)="logout()">Cerrar Sesión</a></li>
+              <li>
+                <a class="dropdown-item text-danger" (click)="logout()"> Cerrar Sesión </a>
+              </li>
             </ul>
           </div>
           <div class="nav-item">
-            <a class="nav-link text-white position-relative fs-5" routerLink="/carrito">
+            <a
+              class="nav-link text-white position-relative fs-5"
+              routerLink="/carrito"
+              (click)="closeNavbarOnClick()"
+            >
               🛒 Carrito @if (carritoService.getCarritoActual().cantidadTotal > 0) {
               <span
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
@@ -250,10 +318,18 @@
           </div>
           } @else {
           <div class="nav-item">
-            <a class="nav-link text-white fs-5" routerLink="/login">Iniciar Sesión</a>
+            <a class="nav-link text-white fs-5" routerLink="/login" (click)="closeNavbarOnClick()">
+              Iniciar Sesión
+            </a>
           </div>
           <div class="nav-item">
-            <a class="btn btn-outline-warning btn-lg ms-3" routerLink="/registro">Registrarse</a>
+            <a
+              class="btn btn-outline-warning btn-lg ms-3"
+              routerLink="/registro"
+              (click)="closeNavbarOnClick()"
+            >
+              Registrarse
+            </a>
           </div>
           }
         </div>
