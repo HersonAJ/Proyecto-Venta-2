@@ -116,7 +116,7 @@ public class PedidosEntregadosDB {
         }
         return null;
     }
-
+/*
     private int contarCheveresEnPedido(Connection conn, Integer pedidoId) throws SQLException {
         String sql = """
             SELECT SUM(dp.cantidad) as total_cheveres
@@ -124,6 +124,27 @@ public class PedidosEntregadosDB {
             JOIN productos p ON dp.producto_id = p.id
             WHERE dp.pedido_id = ? AND p.tipo = 'cheveres'
             """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pedidoId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("total_cheveres");
+            }
+        }
+        return 0;
+    }
+ */
+
+    private int contarCheveresEnPedido(Connection conn, Integer pedidoId) throws SQLException {
+        // SOLO ESTE CAMBIO: Usar ILIKE para que sea case-insensitive
+        String sql = """
+        SELECT COALESCE(SUM(dp.cantidad), 0) as total_cheveres
+        FROM detalles_pedido dp
+        JOIN productos p ON dp.producto_id = p.id
+        WHERE dp.pedido_id = ? AND p.tipo ILIKE 'cheveres'
+        """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, pedidoId);
