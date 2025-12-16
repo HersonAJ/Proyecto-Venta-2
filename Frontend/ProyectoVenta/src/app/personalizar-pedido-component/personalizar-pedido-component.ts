@@ -69,7 +69,7 @@ export class PersonalizarPedidoComponent implements OnInit {
 
     setTimeout(() => {
       this.loading = false;
-      this.router.navigate(['/menu']);
+      this.router.navigate(['/carrito']);
     }, 500);
   }
 

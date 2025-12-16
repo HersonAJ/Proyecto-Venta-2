@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs'; 
+import { tap } from 'rxjs/operators'; 
 import { RestConstants } from '../rest-constants';
 import { AuthService } from './auth-service';
 
@@ -41,6 +42,9 @@ export interface MarcarEntregadoResponse {
 export class PedidosPendientesService {
 
   private apiUrl: string;
+  
+  private fidelidadActualizadaSource = new Subject<void>();
+  fidelidadActualizada$ = this.fidelidadActualizadaSource.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -75,6 +79,12 @@ export class PedidosPendientesService {
       `${this.apiUrl}pedidos/${pedidoId}/entregado`,
       {}, // Body vacío para PUT
       { headers }
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          this.fidelidadActualizadaSource.next();
+        }
+      })
     );
   }
 }

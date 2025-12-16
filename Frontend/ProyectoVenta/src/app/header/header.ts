@@ -3,6 +3,7 @@ import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../servicios/auth-service';
 import { PerfilService, PerfilCompleto } from '../servicios/perfil-service';
+import { PedidosPendientesService } from '../servicios/pedidos-pendientes-service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { CarritoService } from '../servicios/carrito-service';
@@ -23,12 +24,12 @@ export class Header implements OnInit, OnDestroy {
 
   loading = false;
   private subscriptions: Subscription[] = [];
-  private navbarCollapse: any;
 
   constructor(
     public authService: AuthService,
     public carritoService: CarritoService,
     private perfilService: PerfilService,
+    private pedidosPendientesService: PedidosPendientesService,
     private router: Router
   ) { }
 
@@ -46,6 +47,11 @@ export class Header implements OnInit, OnDestroy {
       }
     });
 
+    const fidelidadSub = this.pedidosPendientesService.fidelidadActualizada$.subscribe(() => {
+      console.log('📢 Evento recibido: pedido entregado, actualizando fidelidad...');
+      this.actualizarFidelidadEnTiempoReal();
+    });
+
     // Cerrar menú en navegación
     const routerSub = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -53,7 +59,7 @@ export class Header implements OnInit, OnDestroy {
       }
     });
 
-    this.subscriptions.push(authSub, routerSub);
+    this.subscriptions.push(authSub, fidelidadSub, routerSub);
   }
 
   cargarDatosPerfil() {
@@ -68,6 +74,29 @@ export class Header implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error cargando datos del perfil: ', error);
           this.perfilDataSubject.next(null);
+          this.loading = false;
+        }
+      });
+    }
+  }
+
+  actualizarFidelidadEnTiempoReal(): void {
+    if (this.authService.isLoggedIn() && !this.loading) {
+      this.loading = true;
+      console.log('🔄 Actualizando datos de fidelidad en tiempo real...');
+      
+      this.perfilService.getPerfilCompleto().pipe(take(1)).subscribe({
+        next: (data) => {
+          console.log('✅ Fidelidad actualizada:', {
+            promocionActual: data.fidelidad?.promocionActual,
+            promocionesPendientes: data.fidelidad?.promocionesPendientes,
+            porcentajeCompletado: data.fidelidad?.porcentajeCompletado
+          });
+          this.perfilDataSubject.next(data);
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('❌ Error actualizando fidelidad: ', error);
           this.loading = false;
         }
       });
