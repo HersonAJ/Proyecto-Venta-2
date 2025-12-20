@@ -14,6 +14,8 @@ import { CanjearPromoComponent } from './canjear-promo-component/canjear-promo-c
 import { VentasManualesComponent } from './ventas-manuales-component/ventas-manuales-component';
 import { AuthGuard } from './guards/auth-guard';
 import { RoleGuard } from './guards/role-guard';
+import { UsuariosComponent } from './usuarios-component/usuarios-component';
+import { ReporteVentasComponent } from './reporte-ventas-component/reporte-ventas-component';
 
 export const routes: Routes = [
     // Rutas PÚBLICAS
@@ -34,6 +36,8 @@ export const routes: Routes = [
     { path: 'pedidos-pendientes', component: PedidosPendientesComponent, canActivate: [RoleGuard] },
     { path: 'canjear-promo', component: CanjearPromoComponent, canActivate: [RoleGuard] },
     { path: 'venta-manual', component: VentasManualesComponent, canActivate: [RoleGuard] },
+    { path: 'usuarios', component: UsuariosComponent, canActivate: [RoleGuard] },
+    { path: 'ventas', component: ReporteVentasComponent, canActivate: [RoleGuard] },
     
     // Redirección por defecto
     { path: '', redirectTo: '/inicio', pathMatch: 'full' }

@@ -1,0 +1,161 @@
+.reporte-ventas-section {
+  .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 193, 7, 0.1);
+      border-color: #ffc107 !important;
+    }
+  }
+
+  .btn-outline-warning {
+    &.active {
+      background-color: #ffc107;
+      border-color: #ffc107;
+      color: #212529;
+      
+      &:hover {
+        background-color: #ffca2c;
+        border-color: #ffca2c;
+      }
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .table-dark {
+    --bs-table-bg: transparent;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05);
+    --bs-table-hover-bg: rgba(255, 193, 7, 0.1);
+    
+    th {
+      border-bottom: 2px solid #ffc107 !important;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: rgba(255, 193, 7, 0.1);
+      }
+    }
+    
+    td {
+      vertical-align: middle;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    
+    tr {
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: rgba(255, 193, 7, 0.05);
+      }
+    }
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    
+    &.bg-warning {
+      background-color: rgba(255, 193, 7, 0.2) !important;
+      color: #ffc107 !important;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+    
+    &.bg-success {
+      background-color: rgba(25, 135, 84, 0.2) !important;
+      color: #198754 !important;
+      border: 1px solid rgba(25, 135, 84, 0.3);
+    }
+    
+    &.bg-primary {
+      background-color: rgba(13, 110, 253, 0.2) !important;
+      color: #0d6efd !important;
+      border: 1px solid rgba(13, 110, 253, 0.3);
+    }
+  }
+
+  .form-control, .form-select {
+    background-color: #2c1810;
+    border-color: #495057;
+    color: #fff;
+    
+    &:focus {
+      background-color: #2c1810;
+      border-color: #ffc107;
+      color: #fff;
+      box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+    }
+    
+    &[type="date"] {
+      &::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.7;
+      }
+    }
+  }
+
+  .input-group-text {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #2c1810;
+    font-weight: 600;
+  }
+
+  .logo-placeholder {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  }
+
+  // Gráfico de ventas
+  .grafico-ventas {
+    .barra-grafico {
+      width: 40px;
+      min-height: 10px;
+      background: linear-gradient(to top, #ffc107, #ff9800);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s ease;
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        background: linear-gradient(to top, rgba(255, 255, 255, 0.2), transparent);
+        border-radius: 4px 4px 0 0;
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .table-responsive {
+      font-size: 0.875rem;
+      
+      th, td {
+        padding: 0.5rem;
+      }
+    }
+    
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+    }
+    
+    .grafico-ventas {
+      .barra-grafico {
+        width: 30px;
+      }
+    }
+  }
+}

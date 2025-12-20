@@ -38,23 +38,57 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/api/auth/login").permitAll()
-                                .requestMatchers("/api/auth/registro").permitAll()
-                                .requestMatchers("/api/usuario/perfil-completo").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/api/usuario/avatar").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/api/productos/crear").hasRole("admin")
-                                .requestMatchers(HttpMethod.POST, "/api/admin/crear-trabajador").hasRole("admin")
-                                .requestMatchers(HttpMethod.GET, "/api/trabajador/pedidos-pendientes").hasAnyRole("trabajador", "admin")
-                                .requestMatchers(HttpMethod.PUT, "/api/trabajador/pedidos/*/entregado").hasAnyRole("trabajador", "admin")
-                                .requestMatchers("/api/menu/obtener").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/pedidos/crear").authenticated()
-                                .requestMatchers(HttpMethod.GET, "/api/pedidos/mis-pedidos").authenticated()
-                                .requestMatchers("/api/auth/test").permitAll()
-                                .requestMatchers("/api/auth/test-db").permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("admin")
-                                .requestMatchers("/api/trabajador/**").hasAnyRole("trabajador", "admin")
-                                .anyRequest().authenticated()
+                        // Permisos públicos
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/registro").permitAll()
+                        .requestMatchers("/api/auth/test").permitAll()
+                        .requestMatchers("/api/auth/test-db").permitAll()
+                        .requestMatchers("/api/menu/obtener").permitAll()
+
+                        // ========== ENDPOINTS DE VENTAS ==========
+                        // 1. Reporte completo de ventas (solo admin)
+                        .requestMatchers(HttpMethod.GET, "/api/ventas/reporte").hasRole("admin")
+                        // 2. Estadísticas de ventas (solo admin)
+                        .requestMatchers(HttpMethod.GET, "/api/ventas/estadisticas").hasRole("admin")
+                        // 3. Ventas del día (trabajadores y admin)
+                        .requestMatchers(HttpMethod.GET, "/api/ventas/hoy").hasAnyRole("trabajador", "admin")
+
+                        // ========== ENDPOINTS DE USUARIOS ==========
+                        // 1. Lista de todos los usuarios (trabajadores y admin)
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAnyRole("trabajador", "admin")
+                        // 2. Usuarios por rol (trabajadores y admin)
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/rol/**").hasAnyRole("trabajador", "admin")
+                        // 3. Estadísticas de usuarios (solo admin)
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/estadisticas").hasRole("admin")
+                        // 4. Usuario por ID (trabajadores y admin)
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasAnyRole("trabajador", "admin")
+
+                        // ========== ENDPOINTS EXISTENTES ==========
+                        // Perfil de usuario
+                        .requestMatchers("/api/usuario/perfil-completo").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/usuario/avatar").authenticated()
+
+                        // Productos (solo admin puede crear)
+                        .requestMatchers(HttpMethod.POST, "/api/productos/crear").hasRole("admin")
+
+                        // Administración
+                        .requestMatchers(HttpMethod.POST, "/api/admin/crear-trabajador").hasRole("admin")
+
+                        // Trabajadores
+                        .requestMatchers(HttpMethod.GET, "/api/trabajador/pedidos-pendientes").hasAnyRole("trabajador", "admin")
+                        .requestMatchers(HttpMethod.PUT, "/api/trabajador/pedidos/*/entregado").hasAnyRole("trabajador", "admin")
+
+                        // Pedidos
+                        .requestMatchers(HttpMethod.POST, "/api/pedidos/crear").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/pedidos/mis-pedidos").authenticated()
+
+                        // Rutas generales por rol
+                        .requestMatchers("/api/admin/**").hasRole("admin")
+                        .requestMatchers("/api/trabajador/**").hasAnyRole("trabajador", "admin")
+
+                        // Cualquier otra solicitud requiere autenticación
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -76,7 +110,7 @@ public class SecurityConfig {
                 "http://frontend:80",
                 "https://tacontento.up.railway.app",
                 "http://tacontento.up.railway.app",
-                
+
                 "https://frontend-proyecto-venta-2.onrender.com",
                 "http://frontend-proyecto-venta-2.onrender.com",
                 "https://backend-proyecto-venta-2.onrender.com",

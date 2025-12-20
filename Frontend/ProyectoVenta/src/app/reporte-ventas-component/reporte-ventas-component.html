@@ -1,0 +1,380 @@
+<section class="reporte-ventas-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+        <h5 class="mb-0 fw-bold">📊 REPORTES</h5>
+      </div>
+      <h2 class="fw-bold text-warning">Reporte de Ventas</h2>
+      <p class="opacity-90 mb-0">
+        {{ esAdmin ? 'Administra y visualiza todas las ventas' : 'Ventas del día actual' }}
+      </p>
+    </div>
+
+    <!-- Panel de Modos de Vista -->
+    <div class="card bg-dark border border-secondary mb-4">
+      <div class="card-body">
+        <!-- Indicador de vista actual -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="text-warning mb-0 fw-bold">Vista Actual:</h6>
+          <span class="badge bg-warning text-dark px-3 py-2">
+            {{ getTextoModoVista() }}
+          </span>
+        </div>
+
+        <!-- Botones de modo de vista -->
+        <div class="row g-2 mb-3">
+          <div class="col-md-4">
+            <button 
+              class="btn btn-outline-warning w-100 d-flex align-items-center justify-content-center gap-2"
+              [class.active]="modoVista === 'hoy'"
+              (click)="cambiarModoVista('hoy')"
+            >
+              <span>📅</span>
+              <span>Hoy</span>
+            </button>
+          </div>
+          
+          <div class="col-md-4">
+            <button 
+              class="btn btn-outline-warning w-100 d-flex align-items-center justify-content-center gap-2"
+              [class.active]="modoVista === 'mes'"
+              (click)="cambiarModoVista('mes')"
+              [disabled]="!esAdmin"
+              [title]="!esAdmin ? 'Solo administradores' : ''"
+            >
+              <span>📆</span>
+              <span>Este Mes</span>
+            </button>
+          </div>
+          
+          <div class="col-md-4">
+            <button 
+              class="btn btn-outline-warning w-100 d-flex align-items-center justify-content-center gap-2"
+              [class.active]="modoVista === 'rango'"
+              (click)="cambiarModoVista('rango')"
+              [disabled]="!esAdmin"
+              [title]="!esAdmin ? 'Solo administradores' : ''"
+            >
+              <span>🔍</span>
+              <span>Rango Personalizado</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtro por fechas (solo para rango personalizado) -->
+        @if (modoVista === 'rango' && esAdmin) {
+        <div class="border-top border-secondary pt-3 mt-3">
+          <h6 class="text-warning mb-3 fw-bold">📅 Seleccionar Rango de Fechas:</h6>
+          <div class="row g-3">
+            <div class="col-md-5">
+              <label class="form-label text-secondary">Desde:</label>
+              <input 
+                type="date" 
+                class="form-control bg-dark text-white border-secondary"
+                [(ngModel)]="fechaInicio"
+              >
+            </div>
+            <div class="col-md-5">
+              <label class="form-label text-secondary">Hasta:</label>
+              <input 
+                type="date" 
+                class="form-control bg-dark text-white border-secondary"
+                [(ngModel)]="fechaFin"
+              >
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button 
+                class="btn btn-warning w-100"
+                (click)="aplicarFiltroFechas()"
+              >
+                Aplicar
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Panel de Estadísticas -->
+    @if (ventasPorDia.length > 0 && !isLoading) {
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="card bg-dark border border-warning">
+          <div class="card-body text-center py-3">
+            <div class="text-warning mb-2" style="font-size: 1.5rem;">💰</div>
+            <h4 class="text-white mb-0">{{ formatearMoneda(totalGeneral) }}</h4>
+            <small class="text-secondary">Total General</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-6 col-md-3">
+        <div class="card bg-dark border border-success">
+          <div class="card-body text-center py-3">
+            <div class="text-success mb-2" style="font-size: 1.5rem;">📊</div>
+            <h4 class="text-white mb-0">{{ totalRegistros }}</h4>
+            <small class="text-secondary">Total Ventas</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-6 col-md-3">
+        <div class="card bg-dark border border-primary">
+          <div class="card-body text-center py-3">
+            <div class="text-primary mb-2" style="font-size: 1.5rem;">📅</div>
+            <h4 class="text-white mb-0">{{ getCantidadVentasHoy() }}</h4>
+            <small class="text-secondary">Ventas Hoy</small>
+            <div class="text-success small mt-1">{{ formatearMoneda(getTotalHoy()) }}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-6 col-md-3">
+        <div class="card bg-dark border border-info">
+          <div class="card-body text-center py-3">
+            <div class="text-info mb-2" style="font-size: 1.5rem;">📈</div>
+            <h4 class="text-white mb-0">{{ formatearMoneda(ventasPorDia.length > 0 ? totalGeneral / ventasPorDia.length : 0) }}</h4>
+            <small class="text-secondary">Promedio por Día</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Panel de Controles -->
+    <div class="card bg-dark border border-secondary mb-4">
+      <div class="card-body">
+        <div class="row g-3">
+          <!-- Búsqueda -->
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text bg-warning border-warning">
+                <span class="text-dark">🔍</span>
+              </span>
+              <input 
+                type="text" 
+                class="form-control bg-dark text-white border-secondary"
+                placeholder="Buscar por cliente, trabajador, pedido..."
+                [(ngModel)]="terminoBusqueda"
+                (input)="aplicarFiltroBusqueda()"
+              >
+            </div>
+          </div>
+
+          <!-- Items por página -->
+          <div class="col-md-3">
+            <div class="input-group">
+              <span class="input-group-text bg-warning border-warning">
+                <span class="text-dark">📄</span>
+              </span>
+              <select 
+                class="form-select bg-dark text-white border-secondary"
+                [(ngModel)]="limitePorPagina"
+                (change)="cambiarLimitePorPagina()"
+              >
+                <option value="10" class="bg-dark">10 por página</option>
+                <option value="20" class="bg-dark">20 por página</option>
+                <option value="50" class="bg-dark">50 por página</option>
+                <option value="100" class="bg-dark">100 por página</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Botón Actualizar -->
+          <div class="col-md-3">
+            <button class="btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2" (click)="recargar()">
+              <span>🔄</span>
+              <span>Actualizar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de carga -->
+    @if (isLoading) {
+    <div class="text-center py-5">
+      <div class="spinner-border spinner-border-sm text-warning" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2 opacity-90 small">Cargando ventas...</p>
+    </div>
+    }
+
+    <!-- Estado de error -->
+    @if (isError && !isLoading) {
+    <div class="alert alert-danger text-center mb-3 py-2">
+      <div class="d-flex align-items-center justify-content-center">
+        <span class="text-danger me-2">⚠️</span>
+        <span class="small">{{ errorMessage }}</span>
+      </div>
+      <button class="btn btn-outline-warning btn-sm mt-1" (click)="recargar()">Reintentar</button>
+    </div>
+    }
+
+    <!-- Tabla de Ventas -->
+    @if (!isLoading && !isError) {
+    <div class="card bg-dark border border-secondary">
+      <div class="card-body p-0">
+        <!-- Tabla -->
+        @if (ventasFiltradas.length > 0) {
+        <div class="table-responsive">
+          <table class="table table-dark table-hover table-borderless mb-0">
+            <thead class="border-bottom border-secondary">
+              <tr>
+                <th class="text-warning border-0 ps-3" (click)="cambiarOrden('pedido_id')">
+                  Pedido {{ getIconoOrden('pedido_id') }}
+                </th>
+                <th class="text-warning border-0" (click)="cambiarOrden('fecha_venta')">
+                  Fecha {{ getIconoOrden('fecha_venta') }}
+                </th>
+                <th class="text-warning border-0" (click)="cambiarOrden('cliente_nombre')">
+                  Cliente {{ getIconoOrden('cliente_nombre') }}
+                </th>
+                <th class="text-warning border-0" (click)="cambiarOrden('trabajador_nombre')">
+                  Trabajador {{ getIconoOrden('trabajador_nombre') }}
+                </th>
+                <th class="text-warning border-0">Método Pago</th>
+                <th class="text-warning border-0" (click)="cambiarOrden('total')">
+                  Total {{ getIconoOrden('total') }}
+                </th>
+                <th class="text-warning border-0 pe-3">Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (venta of ventasFiltradas; track venta.id) {
+              <tr class="align-middle border-bottom border-secondary">
+                <!-- Pedido ID -->
+                <td class="ps-3">
+                  <div class="text-white fw-bold">#{{ venta.pedido_id }}</div>
+                  <small class="text-secondary">ID: {{ venta.id }}</small>
+                </td>
+                
+                <!-- Fecha -->
+                <td>
+                  <div class="text-white">{{ formatearFechaMostrar(venta.fecha_venta) }}</div>
+                </td>
+                
+                <!-- Cliente -->
+                <td>
+                  <div class="text-white">{{ venta.cliente_nombre }}</div>
+                  @if (venta.usuario_id) {
+                  <small class="text-secondary">ID: {{ venta.usuario_id }}</small>
+                  }
+                </td>
+                
+                <!-- Trabajador -->
+                <td>
+                  <div class="text-white">{{ venta.trabajador_nombre || 'No asignado' }}</div>
+                </td>
+                
+                <!-- Método de Pago -->
+                <td>
+                  @if (venta.metodo_pago === 'efectivo') {
+                  <span class="badge bg-success px-3 py-1">💰 Efectivo</span>
+                  }
+                  @if (venta.metodo_pago === 'tarjeta') {
+                  <span class="badge bg-primary px-3 py-1">💳 Tarjeta</span>
+                  }
+                </td>
+                
+                <!-- Total -->
+                <td>
+                  <div class="text-success fw-bold">{{ formatearMoneda(venta.total) }}</div>
+                </td>
+                
+                <!-- Descripción -->
+                <td class="pe-3">
+                  <div class="text-white">{{ venta.descripcion || 'Sin descripción' }}</div>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+        
+        <!-- Mensaje cuando no hay ventas -->
+        @if (ventasFiltradas.length === 0) {
+        <div class="text-center py-5">
+          <div class="text-warning mb-2" style="font-size: 2rem;">📭</div>
+          @if (terminoBusqueda) {
+          <h5 class="text-white">No se encontraron ventas</h5>
+          <p class="text-secondary">No hay ventas que coincidan con "{{ terminoBusqueda }}"</p>
+          } @else {
+          <h5 class="text-white">No hay ventas registradas</h5>
+          <p class="text-secondary">No se encontraron ventas para el período seleccionado</p>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    @if (ventasFiltradas.length > 0 && totalPaginas > 1) {
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <div class="text-secondary small">
+        {{ getTextoPaginacion() }}
+      </div>
+      
+      <div class="d-flex gap-2">
+        <button 
+          class="btn btn-outline-warning btn-sm" 
+          (click)="paginaAnterior()"
+          [disabled]="paginaActual === 1"
+        >
+          <span class="me-1">⬅️</span> Anterior
+        </button>
+        
+        <div class="d-flex align-items-center px-3">
+          <span class="text-white fw-bold">{{ paginaActual }}</span>
+          <span class="text-secondary mx-1">de</span>
+          <span class="text-secondary">{{ totalPaginas }}</span>
+        </div>
+        
+        <button 
+          class="btn btn-outline-warning btn-sm" 
+          (click)="paginaSiguiente()"
+          [disabled]="!hayMasPaginas"
+        >
+          Siguiente <span class="ms-1">➡️</span>
+        </button>
+      </div>
+    </div>
+    }
+    }
+
+    <!-- Gráfico de ventas por día (solo admin y con datos) -->
+    @if (esAdmin && ventasPorDia.length > 0 && !isLoading) {
+    <div class="card bg-dark border border-secondary mt-4">
+      <div class="card-body">
+        <h6 class="text-warning mb-3 fw-bold d-flex align-items-center gap-2">
+          <span>📈</span>
+          Ventas por Día (Últimos {{ ventasPorDia.length > 7 ? '7' : ventasPorDia.length }} días)
+        </h6>
+        
+        <div class="grafico-ventas">
+          <div class="d-flex align-items-end gap-3" style="height: 150px;">
+            @for (ventaDia of ventasPorDia.slice(0, 7); track ventaDia.fecha) {
+            <div class="flex-grow-1 text-center">
+              <div 
+                class="barra-grafico mx-auto" 
+                [style.height.%]="(ventaDia.total_dia / totalGeneral) * 100"
+                [title]="formatearMoneda(ventaDia.total_dia)"
+              ></div>
+              <div class="mt-2">
+                <div class="text-white small">{{ ventaDia.fecha.split('-')[2] }}/{{ ventaDia.fecha.split('-')[1] }}</div>
+                <div class="text-success fw-bold small">{{ formatearMoneda(ventaDia.total_dia) }}</div>
+                <div class="text-secondary x-small">{{ ventaDia.cantidad_ventas }} ventas</div>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</section>

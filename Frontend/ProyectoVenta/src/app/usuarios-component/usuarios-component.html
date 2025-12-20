@@ -1,0 +1,270 @@
+<section class="usuarios-section bg-dark text-white min-vh-100 py-4">
+  <div class="container">
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <div class="logo-placeholder bg-warning text-dark rounded p-2 d-inline-block mb-2">
+        <h5 class="mb-0 fw-bold">👥 USUARIOS</h5>
+      </div>
+      <h2 class="fw-bold text-warning">Gestión de Usuarios</h2>
+      <p class="opacity-90 mb-0">Administra y visualiza los usuarios registrados</p>
+    </div>
+
+    <!-- Panel de Filtros y Búsqueda -->
+    <div class="card bg-dark border border-secondary mb-4">
+      <div class="card-body">
+        <div class="row g-3">
+          <!-- Búsqueda -->
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text bg-warning border-warning">
+                <span class="text-dark">🔍</span>
+              </span>
+              <input 
+                type="text" 
+                class="form-control bg-dark text-white border-secondary" 
+                placeholder="Buscar por nombre o email..."
+                [(ngModel)]="terminoBusqueda"
+                (input)="aplicarFiltroBusqueda()"
+              >
+            </div>
+          </div>
+
+          <!-- Filtro por Rol -->
+          <div class="col-md-3">
+            <select 
+              class="form-select bg-dark text-white border-secondary"
+              [(ngModel)]="filtroRol"
+              (change)="cambiarFiltroRol()"
+            >
+              <option value="todos" class="bg-dark">👤 Todos los usuarios</option>
+              <option value="cliente" class="bg-dark">👨‍🍳 Clientes</option>
+              <option value="trabajador" class="bg-dark">👷 Trabajadores</option>
+              <option value="admin" class="bg-dark">👑 Administradores</option>
+            </select>
+          </div>
+
+          <!-- Items por página -->
+          <div class="col-md-3">
+            <div class="input-group">
+              <span class="input-group-text bg-warning border-warning">
+                <span class="text-dark">📄</span>
+              </span>
+              <select 
+                class="form-select bg-dark text-white border-secondary"
+                [(ngModel)]="limitePorPagina"
+                (change)="cambiarLimitePorPagina()"
+              >
+                <option value="5" class="bg-dark">5 por página</option>
+                <option value="10" class="bg-dark">10 por página</option>
+                <option value="20" class="bg-dark">20 por página</option>
+                <option value="50" class="bg-dark">50 por página</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="row mt-4 g-2" *ngIf="estadisticasRoles && !isLoading">
+          <div class="col-6 col-md-3">
+            <div class="card bg-dark border border-warning">
+              <div class="card-body text-center py-3">
+                <div class="text-warning mb-1">👥</div>
+                <h4 class="text-white mb-0">{{ totalRegistros }}</h4>
+                <small class="text-secondary">Total Usuarios</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3" *ngIf="estadisticasRoles.cliente !== undefined">
+            <div class="card bg-dark border border-primary">
+              <div class="card-body text-center py-3">
+                <div class="text-primary mb-1">👨‍🍳</div>
+                <h4 class="text-white mb-0">{{ estadisticasRoles.cliente }}</h4>
+                <small class="text-secondary">Clientes</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3" *ngIf="estadisticasRoles.trabajador !== undefined">
+            <div class="card bg-dark border border-info">
+              <div class="card-body text-center py-3">
+                <div class="text-info mb-1">👷</div>
+                <h4 class="text-white mb-0">{{ estadisticasRoles.trabajador }}</h4>
+                <small class="text-secondary">Trabajadores</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3" *ngIf="estadisticasRoles.admin !== undefined">
+            <div class="card bg-dark border border-danger">
+              <div class="card-body text-center py-3">
+                <div class="text-danger mb-1">👑</div>
+                <h4 class="text-white mb-0">{{ estadisticasRoles.admin }}</h4>
+                <small class="text-secondary">Administradores</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de carga -->
+    @if (isLoading) {
+    <div class="text-center py-5">
+      <div class="spinner-border spinner-border-sm text-warning" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2 opacity-90 small">Cargando usuarios...</p>
+    </div>
+    }
+
+    <!-- Estado de error -->
+    @if (isError && !isLoading) {
+    <div class="alert alert-danger text-center mb-3 py-2">
+      <div class="d-flex align-items-center justify-content-center">
+        <span class="text-danger me-2">⚠️</span>
+        <span class="small">{{ errorMessage }}</span>
+      </div>
+      <button class="btn btn-outline-warning btn-sm mt-1" (click)="recargar()">Reintentar</button>
+    </div>
+    }
+
+    <!-- Tabla de Usuarios -->
+    @if (!isLoading && !isError) {
+    <div class="card bg-dark border border-secondary">
+      <div class="card-body p-0">
+        <!-- Tabla -->
+        <div class="table-responsive">
+          <table class="table table-dark table-hover table-borderless mb-0">
+            <thead class="border-bottom border-secondary">
+              <tr>
+                <th class="text-warning border-0 ps-3" (click)="cambiarOrden('nombre')">
+                  Nombre {{ getIconoOrden('nombre') }}
+                </th>
+                <th class="text-warning border-0" (click)="cambiarOrden('email')">
+                  Email {{ getIconoOrden('email') }}
+                </th>
+                <th class="text-warning border-0">Teléfono</th>
+                <th class="text-warning border-0" (click)="cambiarOrden('rol')">
+                  Rol {{ getIconoOrden('rol') }}
+                </th>
+                <th class="text-warning border-0" (click)="cambiarOrden('fecha_registro')">
+                  Fecha Registro {{ getIconoOrden('fecha_registro') }}
+                </th>
+                <th class="text-warning border-0 pe-3">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (usuario of usuariosFiltrados; track usuario.id) {
+              <tr class="align-middle border-bottom border-secondary">
+                <!-- Avatar y Nombre -->
+                <td class="ps-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <img 
+                      [src]="getAvatarUrl(usuario.avatar_id)" 
+                      alt="Avatar" 
+                      class="rounded-circle" 
+                      style="width: 40px; height: 40px; object-fit: cover;"
+                    >
+                    <div>
+                      <div class="text-white fw-medium">{{ usuario.nombre }}</div>
+                      <small class="text-secondary">ID: {{ usuario.id }}</small>
+                    </div>
+                  </div>
+                </td>
+                
+                <!-- Email -->
+                <td>
+                  <div class="text-white">{{ usuario.email }}</div>
+                </td>
+                
+                <!-- Teléfono -->
+                <td>
+                  <span class="text-white">{{ usuario.telefono || 'No registrado' }}</span>
+                </td>
+                
+                <!-- Rol -->
+                <td>
+                  @if (usuario.rol === 'cliente') {
+                  <span class="badge bg-primary px-3 py-1">👨‍🍳 Cliente</span>
+                  }
+                  @if (usuario.rol === 'trabajador') {
+                  <span class="badge bg-info px-3 py-1">👷 Trabajador</span>
+                  }
+                  @if (usuario.rol === 'admin') {
+                  <span class="badge bg-danger px-3 py-1">👑 Administrador</span>
+                  }
+                </td>
+                
+                <!-- Fecha Registro -->
+                <td>
+                  <div class="text-white">{{ formatearFecha(usuario.fecha_registro) }}</div>
+                </td>
+                
+                <!-- Estado -->
+                <td class="pe-3">
+                  @if (usuario.activo) {
+                  <span class="badge bg-success px-3 py-1">✅ Activo</span>
+                  }
+                  @if (!usuario.activo) {
+                  <span class="badge bg-secondary px-3 py-1">⛔ Inactivo</span>
+                  }
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mensaje cuando no hay usuarios -->
+        @if (usuariosFiltrados.length === 0) {
+        <div class="text-center py-5">
+          <div class="text-warning mb-2" style="font-size: 2rem;">📭</div>
+          @if (terminoBusqueda) {
+          <h5 class="text-white">No se encontraron usuarios</h5>
+          <p class="text-secondary">No hay usuarios que coincidan con "{{ terminoBusqueda }}"</p>
+          } @else {
+          <h5 class="text-white">No hay usuarios registrados</h5>
+          <p class="text-secondary">Aún no se han registrado usuarios en el sistema</p>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    @if (usuariosFiltrados.length > 0 && totalPaginas > 1) {
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <div class="text-secondary small">
+        {{ getTextoPaginacion() }}
+      </div>
+      
+      <div class="d-flex gap-2">
+        <button 
+          class="btn btn-outline-warning btn-sm" 
+          (click)="paginaAnterior()"
+          [disabled]="paginaActual === 1"
+        >
+          <span class="me-1">⬅️</span> Anterior
+        </button>
+        
+        <div class="d-flex align-items-center px-3">
+          <span class="text-white fw-bold">{{ paginaActual }}</span>
+          <span class="text-secondary mx-1">de</span>
+          <span class="text-secondary">{{ totalPaginas }}</span>
+        </div>
+        
+        <button 
+          class="btn btn-outline-warning btn-sm" 
+          (click)="paginaSiguiente()"
+          [disabled]="!hayMasPaginas"
+        >
+          Siguiente <span class="ms-1">➡️</span>
+        </button>
+      </div>
+      
+      <button class="btn btn-warning btn-sm" (click)="recargar()">
+        <span class="me-1">🔄</span> Actualizar
+      </button>
+    </div>
+    }
+    }
+  </div>
+</section>

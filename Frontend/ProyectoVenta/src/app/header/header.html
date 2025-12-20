@@ -214,6 +214,29 @@
               Canjear Promoción
             </a>
           </li>
+
+          <!-- NUEVOS ENLACES AGREGADOS -->
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/ventas"
+              routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
+            >
+              📊 Ventas
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/usuarios"
+              routerLinkActive="active"
+              (click)="closeNavbarOnClick()"
+            >
+              👥 Usuarios
+            </a>
+          </li>
           }
 
           <!-- Opciones solo para ADMIN -->
@@ -270,6 +293,18 @@
               <li>
                 <a class="dropdown-item" routerLink="/panel-control" (click)="closeNavbarOnClick()">
                   🎛️ Panel de Control
+                </a>
+              </li>
+
+              <!-- NUEVOS ENLACES EN DROPDOWN -->
+              <li>
+                <a class="dropdown-item" routerLink="/ventas" (click)="closeNavbarOnClick()">
+                  📊 Reporte de Ventas
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/usuarios" (click)="closeNavbarOnClick()">
+                  👥 Gestión de Usuarios
                 </a>
               </li>
               }
