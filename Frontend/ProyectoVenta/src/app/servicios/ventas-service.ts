@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RestConstants } from '../rest-constants';
+import { AuthService } from './auth-service';
 
 // Interfaces dentro del mismo archivo
 export interface Venta {
@@ -41,8 +42,8 @@ export interface ReporteVentasResponse {
   limite?: number;
   totalPaginas?: number;
   hayMasPaginas?: boolean;
-  mensaje?: string;  
-  message?: string; 
+  mensaje?: string;
+  message?: string;
 }
 
 export interface EstadisticasVentasResponse {
@@ -63,9 +64,23 @@ export class VentasService {
 
   constructor(
     private http: HttpClient,
-    private restConstants: RestConstants
+    private restConstants: RestConstants,
+    private authService: AuthService
   ) {
     this.apiUrl = this.restConstants.getApiURL() + 'ventas/';
+  }
+
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    if (token) {
+      return new HttpHeaders({
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      });
+    }
+    return new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
   }
 
   obtenerReporteVentas(
@@ -75,28 +90,37 @@ export class VentasService {
     limite?: number
   ): Observable<ReporteVentasResponse> {
     let params = new HttpParams();
-    
+
     if (fechaInicio) {
       params = params.set('fechaInicio', fechaInicio);
     }
-    
+
     if (fechaFin) {
       params = params.set('fechaFin', fechaFin);
     }
-    
+
     if (pagina) {
       params = params.set('pagina', pagina.toString());
     }
-    
+
     if (limite) {
       params = params.set('limite', limite.toString());
     }
-    
-    return this.http.get<ReporteVentasResponse>(`${this.apiUrl}reporte`, { params });
+
+    return this.http.get<ReporteVentasResponse>(
+      `${this.apiUrl}reporte`,
+      {
+        params,
+        headers: this.getHeaders()
+      }
+    );
   }
 
   obtenerEstadisticasVentas(): Observable<EstadisticasVentasResponse> {
-    return this.http.get<EstadisticasVentasResponse>(`${this.apiUrl}estadisticas`);
+    return this.http.get<EstadisticasVentasResponse>(
+      `${this.apiUrl}estadisticas`,
+      { headers: this.getHeaders() }
+    );
   }
 
   obtenerVentasDelDia(
@@ -104,16 +128,22 @@ export class VentasService {
     limite?: number
   ): Observable<ReporteVentasResponse> {
     let params = new HttpParams();
-    
+
     if (pagina) {
       params = params.set('pagina', pagina.toString());
     }
-    
+
     if (limite) {
       params = params.set('limite', limite.toString());
     }
-    
-    return this.http.get<ReporteVentasResponse>(`${this.apiUrl}hoy`, { params });
+
+    return this.http.get<ReporteVentasResponse>(
+      `${this.apiUrl}hoy`,
+      {
+        params,
+        headers: this.getHeaders()
+      }
+    );
   }
 
   formatearFecha(date: Date): string {
@@ -130,10 +160,10 @@ export class VentasService {
     const hoy = new Date();
     const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     const ultimoDiaMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-    
+
     const fechaInicio = this.formatearFecha(primerDiaMes);
     const fechaFin = this.formatearFecha(ultimoDiaMes);
-    
+
     return this.obtenerReporteVentas(fechaInicio, fechaFin, pagina, limite);
   }
 
@@ -144,10 +174,10 @@ export class VentasService {
     const hoy = new Date();
     const primerDiaSemana = new Date(hoy);
     primerDiaSemana.setDate(hoy.getDate() - hoy.getDay());
-    
+
     const fechaInicio = this.formatearFecha(primerDiaSemana);
     const fechaFin = this.formatearFecha(hoy);
-    
+
     return this.obtenerReporteVentas(fechaInicio, fechaFin, pagina, limite);
   }
 }

@@ -317,13 +317,18 @@ export class ReporteVentasComponent implements OnInit {
   /**
    * Formatea un monto como moneda
    */
-  formatearMoneda(monto: number): string {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0
-    }).format(monto);
-  }
+formatearMoneda(monto: number): string {
+  const formatter = new Intl.NumberFormat('es-GT', {
+    style: 'currency',
+    currency: 'GTQ',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  
+  return formatter.format(monto)
+    .replace('GTQ', 'Q')
+    .replace('$', 'Q');
+}
 
   /**
    * Obtiene la clase CSS para el método de pago

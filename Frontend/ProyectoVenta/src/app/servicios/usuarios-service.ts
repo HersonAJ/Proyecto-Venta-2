@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RestConstants } from '../rest-constants';
+import { AuthService } from './auth-service';
 
 // Interfaces dentro del mismo archivo
 export interface Usuario {
@@ -55,9 +56,23 @@ export class UsuariosService {
 
   constructor(
     private http: HttpClient,
-    private restConstants: RestConstants
+    private restConstants: RestConstants,
+    private authService: AuthService
   ) {
     this.apiUrl = this.restConstants.getApiURL() + 'usuarios/';
+  }
+
+    private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    if (token) {
+      return new HttpHeaders({
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      });
+    }
+    return new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
   }
 
   obtenerTodosUsuarios(
@@ -74,7 +89,13 @@ export class UsuariosService {
       params = params.set('limite', limite.toString());
     }
     
-    return this.http.get<ReporteUsuariosResponse>(this.apiUrl, { params });
+    return this.http.get<ReporteUsuariosResponse>(
+      this.apiUrl, 
+      { 
+        params, 
+        headers: this.getHeaders() 
+      }
+    );
   }
 
   obtenerUsuariosPorRol(
@@ -94,16 +115,25 @@ export class UsuariosService {
     
     return this.http.get<ReporteUsuariosResponse>(
       `${this.apiUrl}rol/${rol}`,
-      { params }
+      { 
+        params, 
+        headers: this.getHeaders() 
+      }
     );
   }
 
   obtenerEstadisticasUsuarios(): Observable<EstadisticasUsuariosResponse> {
-    return this.http.get<EstadisticasUsuariosResponse>(`${this.apiUrl}estadisticas`);
+    return this.http.get<EstadisticasUsuariosResponse>(
+      `${this.apiUrl}estadisticas`,
+      { headers: this.getHeaders() } 
+    );
   }
 
   obtenerUsuarioPorId(id: number): Observable<UsuarioPorIdResponse> {
-    return this.http.get<UsuarioPorIdResponse>(`${this.apiUrl}${id}`);
+    return this.http.get<UsuarioPorIdResponse>(
+      `${this.apiUrl}${id}`,
+      { headers: this.getHeaders() } 
+    );
   }
 
   obtenerClientes(

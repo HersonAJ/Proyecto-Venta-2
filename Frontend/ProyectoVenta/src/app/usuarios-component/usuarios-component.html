@@ -29,17 +29,15 @@
             </div>
           </div>
 
-          <!-- Filtro por Rol -->
+          <!-- Filtro por Rol (SOLO cliente y trabajador) -->
           <div class="col-md-3">
             <select 
               class="form-select bg-dark text-white border-secondary"
               [(ngModel)]="filtroRol"
               (change)="cambiarFiltroRol()"
             >
-              <option value="todos" class="bg-dark">👤 Todos los usuarios</option>
               <option value="cliente" class="bg-dark">👨‍🍳 Clientes</option>
               <option value="trabajador" class="bg-dark">👷 Trabajadores</option>
-              <option value="admin" class="bg-dark">👑 Administradores</option>
             </select>
           </div>
 
@@ -63,7 +61,7 @@
           </div>
         </div>
 
-        <!-- Estadísticas -->
+        <!-- Estadísticas (mantenemos todas pero ahora solo se usarán las de cliente y trabajador) -->
         <div class="row mt-4 g-2" *ngIf="estadisticasRoles && !isLoading">
           <div class="col-6 col-md-3">
             <div class="card bg-dark border border-warning">
@@ -92,6 +90,8 @@
               </div>
             </div>
           </div>
+          <!-- Opcional: Si se quiere mantener la estadística de admin pero no mostrarla en filtros -->
+          <!-- 
           <div class="col-6 col-md-3" *ngIf="estadisticasRoles.admin !== undefined">
             <div class="card bg-dark border border-danger">
               <div class="card-body text-center py-3">
@@ -101,6 +101,7 @@
               </div>
             </div>
           </div>
+          -->
         </div>
       </div>
     </div>
@@ -180,7 +181,7 @@
                   <span class="text-white">{{ usuario.telefono || 'No registrado' }}</span>
                 </td>
                 
-                <!-- Rol -->
+                <!-- Rol (solo mostrará clientes y trabajadores) -->
                 <td>
                   @if (usuario.rol === 'cliente') {
                   <span class="badge bg-primary px-3 py-1">👨‍🍳 Cliente</span>
@@ -188,6 +189,7 @@
                   @if (usuario.rol === 'trabajador') {
                   <span class="badge bg-info px-3 py-1">👷 Trabajador</span>
                   }
+                  <!-- Si aún aparecieran admins (aunque el filtro no lo permita) -->
                   @if (usuario.rol === 'admin') {
                   <span class="badge bg-danger px-3 py-1">👑 Administrador</span>
                   }

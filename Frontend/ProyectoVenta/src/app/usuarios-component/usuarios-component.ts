@@ -22,7 +22,7 @@ export class UsuariosComponent implements OnInit {
   errorMessage: string = '';
   
   // Filtros y búsqueda
-  filtroRol: string = 'todos';
+  filtroRol: string = 'cliente'; // Cambiamos valor por defecto a 'cliente'
   terminoBusqueda: string = '';
   
   // Paginación
@@ -35,12 +35,10 @@ export class UsuariosComponent implements OnInit {
   // Estadísticas
   estadisticasRoles: any = {};
   
-  // Roles disponibles para filtro
+  // Roles disponibles para filtro (SOLO cliente y trabajador)
   roles = [
-    { valor: 'todos', nombre: 'Todos los usuarios' },
-    { valor: 'cliente', nombre: 'Clientes' },
-    { valor: 'trabajador', nombre: 'Trabajadores' },
-    { valor: 'admin', nombre: 'Administradores' }
+    { valor: 'cliente', nombre: '👨‍🍳 Clientes' },
+    { valor: 'trabajador', nombre: '👷 Trabajadores' }
   ];
   
   // Ordenamiento
@@ -64,23 +62,13 @@ export class UsuariosComponent implements OnInit {
     this.isError = false;
     this.paginaActual = pagina;
 
-    if (this.filtroRol === 'todos') {
-      // Cargar todos los usuarios
-      this.usuariosService.obtenerTodosUsuarios(pagina, this.limitePorPagina)
-        .pipe(finalize(() => this.isLoading = false))
-        .subscribe({
-          next: (response: ReporteUsuariosResponse) => this.procesarRespuestaUsuarios(response),
-          error: (error) => this.manejarError('Error al cargar usuarios', error)
-        });
-    } else {
-      // Cargar usuarios por rol específico
-      this.usuariosService.obtenerUsuariosPorRol(this.filtroRol, pagina, this.limitePorPagina)
-        .pipe(finalize(() => this.isLoading = false))
-        .subscribe({
-          next: (response: ReporteUsuariosResponse) => this.procesarRespuestaUsuarios(response),
-          error: (error) => this.manejarError('Error al cargar usuarios', error)
-        });
-    }
+    // Siempre cargar por rol específico (eliminada la opción 'todos')
+    this.usuariosService.obtenerUsuariosPorRol(this.filtroRol, pagina, this.limitePorPagina)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: (response: ReporteUsuariosResponse) => this.procesarRespuestaUsuarios(response),
+        error: (error) => this.manejarError('Error al cargar usuarios', error)
+      });
   }
 
   /**
@@ -152,10 +140,8 @@ export class UsuariosComponent implements OnInit {
    */
   cambiarOrden(campo: string) {
     if (this.ordenCampo === campo) {
-      // Invertir dirección si es el mismo campo
       this.ordenDireccion = this.ordenDireccion === 'asc' ? 'desc' : 'asc';
     } else {
-      // Nuevo campo, orden descendente por defecto
       this.ordenCampo = campo;
       this.ordenDireccion = 'desc';
     }
@@ -277,7 +263,6 @@ export class UsuariosComponent implements OnInit {
 
   /**
    * Verifica si el usuario actual tiene permisos de admin
-   * (Podría usarse para mostrar/ocultar funcionalidades)
    */
   esAdmin(): boolean {
     return this.authService.isAdmin();
