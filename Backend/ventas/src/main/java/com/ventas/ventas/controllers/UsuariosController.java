@@ -1,4 +1,4 @@
-package com.tacos.ventas.controllers;
+package com.ventas.ventas.controllers;
 
 import com.ventas.ventas.DB.reportes.ReporteUsuariosDB;
 import com.ventas.ventas.DTOs.Login.JwtUtil;
