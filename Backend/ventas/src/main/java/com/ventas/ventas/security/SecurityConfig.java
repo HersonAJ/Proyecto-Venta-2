@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Permisos públicos
+                        // 1. PERMISOS PÚBLICOS (primeras porque son más específicas)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/registro").permitAll()
@@ -46,48 +46,38 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/test-db").permitAll()
                         .requestMatchers("/api/menu/obtener").permitAll()
 
-                        // ========== ENDPOINTS DE VENTAS ==========
-                        // 1. Reporte completo de ventas (solo admin)
+                        // 2. NUEVAS RUTAS - ESPECÍFICAS (antes que las generales)
+                        // Ventas
                         .requestMatchers(HttpMethod.GET, "/api/ventas/reporte").hasRole("admin")
-                        // 2. Estadísticas de ventas (solo admin)
                         .requestMatchers(HttpMethod.GET, "/api/ventas/estadisticas").hasRole("admin")
-                        // 3. Ventas del día (trabajadores y admin)
                         .requestMatchers(HttpMethod.GET, "/api/ventas/hoy").hasAnyRole("trabajador", "admin")
 
-                        // ========== ENDPOINTS DE USUARIOS ==========
-                        // 1. Lista de todos los usuarios (trabajadores y admin)
+                        // Usuarios
                         .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAnyRole("trabajador", "admin")
-                        // 2. Usuarios por rol (trabajadores y admin)
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/rol/**").hasAnyRole("trabajador", "admin")
-                        // 3. Estadísticas de usuarios (solo admin)
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/estadisticas").hasRole("admin")
-                        // 4. Usuario por ID (trabajadores y admin)
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasAnyRole("trabajador", "admin")
 
-                        // ========== ENDPOINTS EXISTENTES ==========
-                        // Perfil de usuario
+                        // 3. RUTAS EXISTENTES - ESPECÍFICAS
+                        // Perfil usuario
                         .requestMatchers("/api/usuario/perfil-completo").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/usuario/avatar").authenticated()
 
-                        // Productos (solo admin puede crear)
+                        // Productos
                         .requestMatchers(HttpMethod.POST, "/api/productos/crear").hasRole("admin")
 
-                        // Administración
+                        // Admin
                         .requestMatchers(HttpMethod.POST, "/api/admin/crear-trabajador").hasRole("admin")
-
-                        // Trabajadores
-                        .requestMatchers(HttpMethod.GET, "/api/trabajador/pedidos-pendientes").hasAnyRole("trabajador", "admin")
-                        .requestMatchers(HttpMethod.PUT, "/api/trabajador/pedidos/*/entregado").hasAnyRole("trabajador", "admin")
 
                         // Pedidos
                         .requestMatchers(HttpMethod.POST, "/api/pedidos/crear").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/pedidos/mis-pedidos").authenticated()
 
-                        // Rutas generales por rol
+                        // 4. RUTAS GENERALES POR ROL (más generales, al final)
                         .requestMatchers("/api/admin/**").hasRole("admin")
                         .requestMatchers("/api/trabajador/**").hasAnyRole("trabajador", "admin")
 
-                        // Cualquier otra solicitud requiere autenticación
+                        // 5. CUALQUIER OTRA RUTA
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -129,6 +119,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
